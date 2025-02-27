@@ -1,0 +1,9 @@
+<!-- Categories component -->
+<section class="container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 items-stretch">
+    @for (category of categories; track category._id) {
+        <app-category-card [category]="category" (emitter)="emiiter = $event" (categoryId)="categoryId = $event"></app-category-card>
+    }
+</section>
+@defer (when deferFlag) {
+    <app-subcategories [categoryId]="categoryId"></app-subcategories>
+}

@@ -1,0 +1,15 @@
+<!-- Brands component -->
+<section class="container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8 items-stretch">
+    @for (brand of brands; track brand._id) {
+        <app-second-card [brand]="brand" (modalEmitter)="modalEmitter = $event" (bIdEmitter)="bIdEmitter = $event"></app-second-card>
+    }
+</section>
+@if (modal) {
+    <div class="flex justify-center items-center fixed top-0 right-0 bottom-0 left-0 bg-black bg-opacity-50">
+        <div class="relative size-72 sm:size-96">
+            <i (click)="closeModal()" class="absolute end-0 translate-x-1/2 -translate-y-1/2 fa-solid fa-circle-xmark text-xl sm:text-2xl cursor-pointer text-red-500 hover:text-red-700"></i>
+            <img [src]="modalImage" alt="#" class="w-full">
+        </div>
+    </div>
+}
+

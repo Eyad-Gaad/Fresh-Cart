@@ -1,0 +1,13 @@
+<!-- product component -->
+<div class="my-11 w-3/4 md:w-1/2 mx-auto">
+    <input type="text" class="input" placeholder="search..." [(ngModel)]="search">
+ </div>
+<section class="container gap-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 items-stretch">
+    @if (products&&wishList) {
+        @for (product of products; track product._id) {
+            @if(product.title.toLocaleLowerCase().includes(search.toLocaleLowerCase())){
+                <app-card [product]="product" [wishList]="wishList" (wishListEmitter)="wishListEmitter = $event"></app-card>
+            }
+        }
+    }
+</section>
