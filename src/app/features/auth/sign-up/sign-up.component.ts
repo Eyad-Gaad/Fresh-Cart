@@ -11,13 +11,15 @@ import { Router } from '@angular/router';
   styleUrl: './sign-up.component.scss'
 })
 export class SignUpComponent implements OnDestroy{
-  apiSubscription!:Subscription;
-  loading:boolean = false;
-  errorMessage!:string;
   // Inject AuthService and Router.
   authService:AuthService = inject(AuthService);
   router:Router = inject(Router);
-  // signUpform object.
+  
+  loading:boolean = false;
+  errorMessage!:string;
+  subscription:Subscription = new Subscription();
+
+  // signUpform.
   signUpForm:FormGroup = new FormGroup({
     name: new FormControl(null,[Validators.required,Validators.pattern(/^(?![_ -])[A-Za-z]{3,29}(?:[ _-][A-Za-z]{1,29})*(?![_ -])$/)]),
     email: new FormControl(null,[Validators.required,Validators.email]),
@@ -25,6 +27,7 @@ export class SignUpComponent implements OnDestroy{
     rePassword: new FormControl(null,[Validators.required,Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,30}$/)]),
     phone: new FormControl(null,[Validators.required,Validators.pattern(/^(01)[0125][0-9]{8}$/)]),
   },this.confirmPassword);
+
   // Custom Validation (compare between password and repassword)
   confirmPassword(control:AbstractControl){
     if(control.get('password')?.value===control.get('rePassword')?.value){
@@ -34,11 +37,12 @@ export class SignUpComponent implements OnDestroy{
       return {'mismatched':true};
     }
   }
-  // submit
-  submit(){
+
+  // signUp function.
+  signUp(){
     if(this.signUpForm.valid){
       this.loading = true;
-      this.apiSubscription = this.authService.signUp(this.signUpForm.value).subscribe({
+      const submitSub = this.authService.signUp(this.signUpForm.value).subscribe({
         next:(res)=>{
           if(res.message==='success'){
             this.router.navigate(['/logIn']);
@@ -50,12 +54,12 @@ export class SignUpComponent implements OnDestroy{
           this.loading = false;
         }
       });
+      this.subscription.add(submitSub);
     }
   }
+
   ngOnDestroy(): void {
-    // unsubscribe api observation. 
-    if(this.apiSubscription){
-      this.apiSubscription.unsubscribe();
-    }
+    // unsubscribe subscription
+    this.subscription.unsubscribe();
   }
 }

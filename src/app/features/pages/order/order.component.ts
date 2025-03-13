@@ -12,49 +12,57 @@ import { AlertComponent } from '../../../shared/components/alert/alert.component
   styleUrl: './order.component.scss'
 })
 export class OrderComponent implements OnInit,OnDestroy{
-  cId!:string;
-  OnlineSpinnerLoading:boolean = false;
-  cashSpinnerLoading:boolean = false;
-  paramMapSubscription!:Subscription;
-  payOnlineSubscription!:Subscription;
-  cashOrderSubscription!:Subscription;
-  // Inject ActivatedRoute sercive and OrderService.
+
+  // Inject ActivatedRoute sercive , OrderService , router service and toastrService.
   activatedRoute:ActivatedRoute=inject(ActivatedRoute);
   router:Router=inject(Router);
   orderService:OrderService=inject(OrderService);
   toastrService:ToastrService=inject(ToastrService);
+  
+  cId!:string;
+  OnlineSpinnerLoading:boolean = false;
+  cashSpinnerLoading:boolean = false;
+  subscription:Subscription = new Subscription();
+
+  // checkOutInformation form.
   checkOutInformation:FormGroup = new FormGroup({
     details:new FormControl(null,[Validators.maxLength(200)]),
     phone: new FormControl(null,[Validators.required,Validators.pattern(/^(01)[0125][0-9]{8}$/)]),
     city: new FormControl(null,[Validators.required,Validators.pattern(/^.{2,50}$/)])
   });
+
   // get cart ID from ActivatedRoute service.
   getCartId(){
-    this.paramMapSubscription = this.activatedRoute.paramMap.subscribe(res=>{this.cId = res.get('cId')!});
+    const paramMapSub = this.activatedRoute.paramMap.subscribe(res=>{this.cId = res.get('cId')!})
+    this.subscription.add(paramMapSub);
   }
+
   // Pay online function.
   payOnline(){
     if(this.checkOutInformation.valid){
       this.OnlineSpinnerLoading = true;
-      this.payOnlineSubscription = this.orderService.onlineCheckOut(this.cId,this.checkOutInformation.value).subscribe({
+      const payOnlineSub = this.orderService.onlineCheckOut(this.cId,this.checkOutInformation.value).subscribe({
         next:(res)=>{
           if(res.status==='success'){
             window.location.href = res.session.url;
             this.OnlineSpinnerLoading = false;
           }
         },
-        error:(err)=>{
+        error:()=>{
           this.OnlineSpinnerLoading = false;
           this.toastrService.error(`There is a problem , try again !` , `Payment Operation`);
+          this.router.navigate(['/cart']);
         }
       });
+      this.subscription.add(payOnlineSub);
     };
   }
+
   // Cash order function.
   cashOrder(){
     if(this.checkOutInformation.valid){
       this.cashSpinnerLoading = true;
-      this.cashOrderSubscription = this.orderService.cashCheckOut(this.cId,this.checkOutInformation.value).subscribe({
+      const cashOrderSub = this.orderService.cashCheckOut(this.cId,this.checkOutInformation.value).subscribe({
         next:(res)=>{
           if(res.status==='success'){
             this.cashSpinnerLoading = false;
@@ -62,26 +70,27 @@ export class OrderComponent implements OnInit,OnDestroy{
             this.router.navigate(['/allorders']);
           }
         },
-        error:(err)=>{
+        error:()=>{
           this.cashSpinnerLoading = false;
           this.toastrService.error(`There is a problem , try again !` , `Payement Operation`);
-          console.log(err);
           this.router.navigate(['/cart']);
         }
       });
+      this.subscription.add(cashOrderSub);
     }
   }
+
+  // Cncel payement function.
+  cancelPayment(){
+    this.router.navigate(['/cart']);
+  }
+
   ngOnInit(): void {
     this.getCartId();
   }
+
   ngOnDestroy(): void {
-    // unsubscribe paramMapSubscription , cashOrderSubscription and payOnlineSubscription.
-    this.paramMapSubscription.unsubscribe();
-    if(this.payOnlineSubscription){
-      this.payOnlineSubscription.unsubscribe();
-    }
-    if(this.cashOrderSubscription){
-      this.cashOrderSubscription.unsubscribe();
-    }
+    // unsubscribe subscription
+    this.subscription.unsubscribe();
   }
 }

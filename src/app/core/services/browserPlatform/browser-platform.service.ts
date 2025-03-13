@@ -7,7 +7,7 @@ import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 export class BrowserPlatformService {
   // service for check platform.
   constructor(@Inject(PLATFORM_ID) private platformId:object) { }
-  checkPlatform(){
+  checkPlatform():boolean{
     if(isPlatformBrowser(this.platformId)){
       return true;
     }

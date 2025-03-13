@@ -4,7 +4,7 @@
         <div>
             <h1 class="text-2xl font-bold mb-3">Shop Cart <i class="ml-1 text-green-700 fa-solid fa-cart-plus"></i></h1>
             <h2 class="text-xl font-semibold">Total number of items : {{numOfCartItems}}</h2>
-            <p class="text-green-400">Total Cart Price : {{totalCartPrice}} EGP</p>
+            <p class="text-green-400">Total Cart Price : {{totalCartPrice|currency:'EGP'}}</p>
         </div>
         <div class="flex flex-wrap gap-3 justify-end sm:justify-start">
             <button (click)="routeToOrder()" class="main-btn flex justify-center items-center gap-x-2">Check Out <i class="fa-solid fa-cash-register"></i></button>
@@ -17,7 +17,7 @@
     </div>
     <ul class="flex flex-col gap-y-8">
         @for (cartProduct of cartProducts; track $index) {
-            <app-cart-product [cartProduct]="cartProduct" (ItemEmitter)="ItemEmitter = $event"></app-cart-product>
+            <app-cart-product [cartProduct]="cartProduct" (updateCartProduct)="cartProducts=$event" (newNumOfCartItems)="numOfCartItems=$event" (newTotalCartPrice)="totalCartPrice=$event"></app-cart-product>
         }
     </ul>
 </section>

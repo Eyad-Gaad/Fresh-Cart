@@ -13,22 +13,21 @@ import { Subscription } from 'rxjs';
   styleUrl: './forget-password.component.scss'
 })
 export class ForgetPasswordComponent implements OnDestroy{
-  display:number = 0;
-  forgetPasswordLoading:boolean = false;
-  resetCodeLoading:boolean = false;
-  resetPasswordLoading:boolean = false;
-  forgetPasswordSubscription!:Subscription;
-  resetCodeSubscription!:Subscription;
-  resetPasswordSubscription!:Subscription;
   // Inject AuthService , ToastrService and Router service.
   authService:AuthService = inject(AuthService);
   router:Router = inject(Router);
   toastrService:ToastrService = inject(ToastrService);
-  // forget password form object.
+
+  inputDisplay:number = 0;
+  loadingSpinner:boolean = false;
+  subscription:Subscription = new Subscription();  
+
+  // forget password form.
   forgetPasswordForm:FormGroup = new FormGroup({
     email:new FormControl(null,[Validators.required,Validators.email])
   });
-  // reset code form object.
+
+  // reset code form.
   resetCodeForm:FormGroup = new FormGroup({
     num1:new FormControl(null,[Validators.required,Validators.pattern(/^\d{1}$/)]),
     num2:new FormControl(null,[Validators.required,Validators.pattern(/^\d{1}$/)]),
@@ -37,72 +36,75 @@ export class ForgetPasswordComponent implements OnDestroy{
     num5:new FormControl(null,[Validators.required,Validators.pattern(/^\d{1}$/)]),
     num6:new FormControl(null,[Validators.required,Validators.pattern(/^\d{1}$/)]),
   });
-  // reset password form object.
+
+  // reset password form.
   resetPasswordForm:FormGroup = new FormGroup({
       email:new FormControl(null,[Validators.required,Validators.email]),
       newPassword : new FormControl(null,[Validators.required,Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,30}$/)])
   });
+
+  //Handling error response.
+  errorResponse(message:string){
+    this.loadingSpinner = false;
+    this.toastrService.error(`${message} !`,`Authentication`);    
+  }
+
   // forgetPassword method.
   forgetPassword(){
     if(this.forgetPasswordForm.valid){
-      this.forgetPasswordLoading = true;
-      this.forgetPasswordSubscription = this.authService.forgetPassword(this.forgetPasswordForm.value).subscribe({
+      this.loadingSpinner = true;
+      const forgetPasswordSub = this.authService.forgetPassword(this.forgetPasswordForm.value).subscribe({
         next:(res)=>{
-          this.display = 1;
-          this.forgetPasswordLoading = false;
+          this.inputDisplay = 1;
+          this.loadingSpinner = false;
           this.resetPasswordForm.get('email')?.patchValue(this.forgetPasswordForm.get('email')?.value);
         },
         error:(err)=>{
-          this.forgetPasswordLoading = false;
-          this.toastrService.error(`${err.error.message} !`,`Authentication`);
+          this.errorResponse(err.error.message);
           this.router.navigate([`/signUp`]);
         }
       });
+      this.subscription.add(forgetPasswordSub);
     }
   }
+  
   // resetCode method.
   resetCode(){
     if(this.resetCodeForm.valid){
-      this.resetCodeLoading = true;
-      this.resetCodeSubscription = this.authService.verifyResetCode(`${this.resetCodeForm.get('num1')?.value}${this.resetCodeForm.get('num2')?.value}${this.resetCodeForm.get('num3')?.value}${this.resetCodeForm.get('num4')?.value}${this.resetCodeForm.get('num5')?.value}${this.resetCodeForm.get('num6')?.value}`).subscribe({
+      this.loadingSpinner = true;
+      const resetCodeSub = this.authService.verifyResetCode(`${this.resetCodeForm.get('num1')?.value}${this.resetCodeForm.get('num2')?.value}${this.resetCodeForm.get('num3')?.value}${this.resetCodeForm.get('num4')?.value}${this.resetCodeForm.get('num5')?.value}${this.resetCodeForm.get('num6')?.value}`).subscribe({
         next:(res)=>{
-          this.resetCodeLoading = false;
-          this.display = 2;
+          this.loadingSpinner = false;
+          this.inputDisplay = 2;
         },
         error:(err)=>{
-          this.resetCodeLoading = false;
-          this.toastrService.error(`${err.error.message} !`,`Authentication`);
+          this.errorResponse(err.error.message);
         }
       });
+      this.subscription.add(resetCodeSub);
     }
   }
+
   // resetPassword method.
   resetPassword(){
       if(this.resetPasswordForm.valid){
-        this.resetPasswordLoading = true;
-        this.resetPasswordSubscription = this.authService.resetPassword(this.resetPasswordForm.value).subscribe({
+        this.loadingSpinner = true;
+        const resetPasswordSub = this.authService.resetPassword(this.resetPasswordForm.value).subscribe({
           next:(res)=>{
-            this.resetPasswordLoading = false;
+            this.loadingSpinner = false;
             this.toastrService.success(`Now you have a new password , LogIn Now`,`Authentication`);
             this.router.navigate([`/logIn`]);
           },
           error:(err)=>{
-            this.resetPasswordLoading = false;
-            this.toastrService.error(`${err.error.message}`,`Authentication`);
+            this.errorResponse(err.error.message);
           }
         });
+        this.subscription.add(resetPasswordSub);
       }
   }
+
   ngOnDestroy(): void {
-    // unsubscribe forgetPasswordSubscription , resetCodeSubscription and resetPasswordSubscription.
-    if(this.forgetPasswordSubscription){
-      this.forgetPasswordSubscription.unsubscribe();
-    }
-    if(this.resetCodeSubscription){
-      this.resetCodeSubscription.unsubscribe();
-    }
-    if(this.resetPasswordSubscription){
-      this.resetPasswordSubscription.unsubscribe();
-    }
+    // unsubscribe subscription
+    this.subscription.unsubscribe();
   }
 }

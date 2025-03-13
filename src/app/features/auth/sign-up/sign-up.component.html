@@ -1,6 +1,6 @@
 <!-- signUp component -->
 <div class="w-[70%] mx-auto">
-<form [formGroup]="signUpForm" class="w-full" (ngSubmit)="submit()">
+<form [formGroup]="signUpForm" class="w-full" (ngSubmit)="signUp()">
     <h1 class="text-3xl mb-7 font-semibold">SignUp Now :</h1>
     @if (errorMessage!=null) {
       <app-alert [alertType]="'signUp'" [alertMessage]="errorMessage"></app-alert>

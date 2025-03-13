@@ -1,72 +1,70 @@
-import { AuthService } from './../../../core/services/auth/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { CartService } from './../../../core/services/e-comme/cart/cart.service';
-import { AfterViewChecked, Component, DoCheck, inject, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import { Component, inject,OnDestroy, OnInit} from '@angular/core';
 import { CartProductComponent } from "../../../shared/components/cart-product/cart-product.component";
 import { Subscription } from 'rxjs';
 import { ICartProduct } from '../../../shared/interfaces/cartProduct/cart-product';
 import { Router } from '@angular/router';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'app-cart',
-  imports: [CartProductComponent],
+  imports: [CartProductComponent,CurrencyPipe],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.scss'
 })
-export class CartComponent implements OnInit,DoCheck,OnDestroy{
-  ItemEmitter!:boolean; // 'flag' Coming from child component.
-  cartProducts!:ICartProduct[];
+export class CartComponent implements OnInit,OnDestroy{
+  // Inject CartService , ToastrService and Router.
+  cartService:CartService = inject(CartService);
+  toastrService:ToastrService = inject(ToastrService);
+  router:Router = inject(Router);
+
   totalCartPrice!:number;
   numOfCartItems!:number;
   cId!:string;
-  gatCartSubscription!:Subscription;
-  clearCartSubscription!:Subscription;
   clearLoading:boolean = false;
-  // Inject CartService , ToastrService and Router.
-  cartService:CartService = inject(CartService);
-  authService:AuthService = inject(AuthService);
-  toastrService:ToastrService = inject(ToastrService);
-  router:Router = inject(Router);
+  cartProducts!:ICartProduct[];
+  subscription:Subscription = new Subscription();
+
   // Get User Cart.
   getCart(){
-    this.ItemEmitter=false;
-    this.gatCartSubscription = this.cartService.getUserCart().subscribe({
+    const CartSub = this.cartService.getUserCart().subscribe({
       next:(res)=>{
         this.totalCartPrice = res.data.totalCartPrice;
         this.cartProducts = res.data.products;
         this.numOfCartItems = res.numOfCartItems;
         this.cId = res.cartId;
-      },
-      error:(err)=>{
-        this.toastrService.error('There is a problem , try again !' , 'Cart Operations');
-        this.router.navigate(['/home']);
-        console.log(err);
       }
     });
+    this.subscription.add(CartSub);
   }
+
   // Clear all cart.
   clearCart(){
     if(this.cartProducts.length!=0){
       this.clearLoading = true;
-      this.clearCartSubscription = this.cartService.clearUserCart().subscribe({
+      const clearCartSub = this.cartService.clearUserCart().subscribe({
         next:(res)=>{
           if(res.message==="success"){
-            this.getCart(); 
+            this.cartProducts = [];
+            this.numOfCartItems = 0;
+            this.totalCartPrice = 0
             this.clearLoading = false;
             this.toastrService.success('All cart is clear','Cart Operations');
           }
         },
-        error:(err)=>{   
+        error:()=>{   
           this.clearLoading = false; 
           this.toastrService.error('There is a problem , try again !','Cart Operations');
-          console.log(err);
         }
       });
+      this.subscription.add(clearCartSub);
     }
     else{
       this.toastrService.error('The cart is arledy cleared !');
     }
   }
+
   // Route to order page.
   routeToOrder(){
     if(this.cartProducts.length!=0){
@@ -76,20 +74,13 @@ export class CartComponent implements OnInit,DoCheck,OnDestroy{
       this.toastrService.error('The cart is empty!');
     }
   }
+
   ngOnInit(): void {
     this.getCart();
   }
-  ngDoCheck(): void {
-    // Check if it is any emiiting comming from child component.
-    if(this.ItemEmitter===true){
-      this.getCart();
-    }
-  }
+
   ngOnDestroy(): void {
-    // unsubscribe gatCartSubscription and clearCartSubscription.
-    this.gatCartSubscription.unsubscribe();
-    if(this.clearCartSubscription){
-      this.clearCartSubscription.unsubscribe();
-    }
+    // unsubscribe subscription
+    this.subscription.unsubscribe();
   }
 }

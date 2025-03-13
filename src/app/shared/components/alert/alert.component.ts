@@ -7,6 +7,7 @@ import { Component, Input } from '@angular/core';
   styleUrl: './alert.component.scss'
 })
 export class AlertComponent {
+  // Input alertType and alertMessage from parent comonent.
   @Input() alertType!:string;
   @Input() alertMessage!:string;
 }

@@ -1,38 +1,31 @@
 <!-- home component -->
- <div class="grid grid-cols-1 lg:grid-cols-3 rounded-lg gap-y-14">
-    <div class="h-72 w-auto col-span-1 lg:col-span-2">
+ <h1 class="my-12 text-5xl text-center font-bold"><span class="text-green-700">FreshCart</span> E-commerce</h1>
+ <div class="h-80 md:h-96 w-3/4 md:w-[45%] mx-auto overflow-hidden">
         <owl-carousel-o [options]="customOptions1">
           @for (category of categories; track category._id) {
             <ng-template carouselSlide [id]="category._id">
-              <img [src]="category.image" [alt]="category.name" [title]="category.name" class="h-80 object-contain rounded-lg">
+              <img [src]="category.image" [alt]="category.name" [title]="category.name" class="h-80 md:h-96 object-fill rounded-lg">
             </ng-template>
           }
           </owl-carousel-o>
-    </div>
-    <div class="col-span-1 flex justify-around lg:justify-start lg:flex-col gap-y-7 items-center">
-        <img class="w-40 sm:w-72 h-40 object-contain rounded-lg" [src]="categories[categories.length-1].image" [alt]="categories[categories.length-1].name">
-        <img class="w-40 sm:w-72 h-40 object-contain rounded-lg" [src]="categories[categories.length-2].image" [alt]="categories[categories.length-2].name">
-    </div>
  </div>
- <div class="mb-10">
+ <div class="mb-10 mt-20">
     <h2 class="text-center mb-4 mt-12 text-4xl font-bold">Common Brands</h2>
     <owl-carousel-o [options]="customOptions2">
-        @for (brand of brands; track brand._id) {
-            <ng-template carouselSlide [id]="brand._id">
+        @for (brand of brands; track $index) {
+            <ng-template carouselSlide>
                 <img [src]="brand.image" [alt]="brand.name" [title]="brand.name" class="h-32 object-contain">
             </ng-template>
         }
     </owl-carousel-o>
  </div>
  <div class="my-11 w-3/4 md:w-1/2 mx-auto">
-    <input type="text" class="input" placeholder="search..." [(ngModel)]="search">
+    <input type="text" class="input" placeholder="search product..." [(ngModel)]="search">
  </div>
-<section class="container gap-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 items-stretch">
+<section class="container gap-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
     @if (products&&wishList) {
-        @for (product of products; track product._id) {
-            @if(product.title.toLocaleLowerCase().includes(search.toLocaleLowerCase())){
-                <app-card [product]="product" [wishList]="wishList" (wishListEmitter)="wishListEmitter = $event"></app-card>
-            }
+        @for (product of products|productSearch:search; track product._id) {
+          <app-product-card [product]="product" [wishList]="wishList"></app-product-card>
         }
     }
 </section>

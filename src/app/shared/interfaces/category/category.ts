@@ -1,8 +1,7 @@
-export interface Icategory {
-    _id: string;
-    name: string;
-    slug: string;
-    image: string;
-    createdAt: string;
-    updatedAt: string;
+export interface IsubCategory{
+    name:string
+}
+export interface Icategory extends IsubCategory{
+    _id: string,
+    image: string
 }

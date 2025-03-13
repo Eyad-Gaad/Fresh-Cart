@@ -7,21 +7,19 @@ import { env } from '../../../../shared/environment/env';
   providedIn: 'root'
 })
 export class WishListService {
-  // user token
-  private userToken:string=localStorage.getItem('userToken')!;
   // Inject HttpClient service.
   httpClient:HttpClient = inject(HttpClient);
 
   // Add to user wishList.
   addToUserWishList(pId:string):Observable<any>{
-    return this.httpClient.post(`${env.baseUrl}/api/v1/wishlist`,{productId:pId},{headers:{token:this.userToken}});
+    return this.httpClient.post(`${env.baseUrl}/api/v1/wishlist`,{productId:pId});
   }
   // Get user wishList.
   getUserWishList():Observable<any>{
-    return this.httpClient.get(`${env.baseUrl}/api/v1/wishlist`,{headers:{token:this.userToken}});
+    return this.httpClient.get(`${env.baseUrl}/api/v1/wishlist`);
   }
   // Remove from user wishList
   removeFromUserWishList(pId:string):Observable<any>{
-    return this.httpClient.delete(`${env.baseUrl}/api/v1/wishlist/${pId}`,{headers:{token:this.userToken}});
+    return this.httpClient.delete(`${env.baseUrl}/api/v1/wishlist/${pId}`);
   }
 }

@@ -1,23 +1,26 @@
-import { CategoryService } from './../../../core/services/e-comme/category/category.service';
-import { BrandsService } from './../../../core/services/e-comme/brands/brands.service';
 import {Subscription } from 'rxjs';
-import { ProductsService } from './../../../core/services/e-comme/products/products.service';
-import { Component, DoCheck, inject, OnDestroy, OnInit } from '@angular/core';
-import { Icategory, Iproduct } from '../../../shared/interfaces/product/product';
-import { CardComponent } from "../../../shared/components/card/card.component";
-import { Router } from '@angular/router';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Iproduct } from '../../../shared/interfaces/product/product';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { OwlOptions } from 'ngx-owl-carousel-o';
 import { Ibrand } from '../../../shared/interfaces/brand/brand';
-import { WishListService } from '../../../core/services/e-comme/wishList/wish-list.service';
 import { FormsModule } from '@angular/forms';
+import { ProductSearchPipe } from '../../../shared/pipes/productSearch/product-search.pipe';
+import { Icategory } from '../../../shared/interfaces/category/category';
+import { ForkJoinApiService } from '../../../core/services/e-comme/forkJoinApi/fork-join-api.service';
+import { WishListService } from '../../../core/services/e-comme/wishList/wish-list.service';
+import { ProductCardComponent } from '../../../shared/components/product-card/product-card.component';
 @Component({
   selector: 'app-home',
-  imports: [CardComponent,CarouselModule,FormsModule],
+  imports: [ProductCardComponent,CarouselModule,FormsModule,ProductSearchPipe],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent implements OnInit,DoCheck,OnDestroy{
+export class HomeComponent implements OnInit,OnDestroy{
+  // Inject ForkJoinApiService(service call 3 forkJoin api end points (products,brands,categories), wishListService and Router.
+  forkJoinApiService:ForkJoinApiService = inject(ForkJoinApiService);
+  wishListService:WishListService = inject(WishListService);
+
   // Properties for owl carousel.
   customOptions1: OwlOptions = {
     loop: true,
@@ -74,87 +77,41 @@ export class HomeComponent implements OnInit,DoCheck,OnDestroy{
     autoplayHoverPause:true,
     autoHeight:true
   }
+
   search:string='';
-  getProductsSubscription!:Subscription;
-  getBrandsSubscription!:Subscription;
-  getCategoriesSubscription!:Subscription;
-  wishListSubscription!:Subscription;
   products!:Iproduct[];
   brands!:Ibrand[];
   categories!:Icategory[];
   wishList!:Iproduct[];
-  wishListEmitter!:boolean; // value emitted from child card component to update the wishList array; 
-  //Inject AuthService , BrandsService , CategoryService , WishListService and router service.
-  productsService:ProductsService = inject(ProductsService);
-  brandsService:BrandsService = inject(BrandsService);
-  categoryService:CategoryService = inject(CategoryService);
-  wishListService:WishListService=inject(WishListService);
-  router:Router = inject(Router);
-  // get all products.
-  getProducts(){
-    this.getProductsSubscription =this.productsService.getAllProducts().subscribe({
-      next:(res)=>{
-        this.products=res.data;
-      },
-      error:(err)=>{
-        //Route to pageNotFound.
-        this.router.navigate(['**']);
-        console.log(err);
+  subscription:Subscription = new Subscription();
+
+  // Get All Home Data by using forkJoin and shareReply observable operations on (products , brands , categories).
+  getHomePageAllData(){
+    const homeSub = this.forkJoinApiService.homeForkJoinApi().subscribe({
+      next:res=>{
+        this.products = res.products.data;
+        this.brands = res.brands;
+        this.categories = res.categories;
       }
     });
+    this.subscription.add(homeSub);
   }
-  // get all brands
-  getBrands(){
-    this.getBrandsSubscription = this.brandsService.getAllBrands().subscribe({
-      next:(res)=>{
-        this.brands = res.data;
-      },
-      error:(err)=>{
-        console.log(err);
-      }
-    });
-  }
-  // get all Categories.
-  getCategories(){
-    this.getCategoriesSubscription =  this.categoryService.getAllCategories().subscribe({
-      next:(res)=>{
-        this.categories = res.data;
-      },
-      error:(err)=>{
-        console.log(err);
-      }
-    });
-  }
-  // get wishList
+
+  // Special api method for getWishList not with forkJoinApiService because forkJoinApiService is sharedReply unLike getWishList.
   getWishList(){
-    this.wishListEmitter = false;
-    this.wishListSubscription = this.wishListService.getUserWishList().subscribe({
-      next:(res)=>{
-        if(res.status==='success'){
-          this.wishList = res.data;
-        }
-      },
-      error:(err)=>{
-        console.log(err);
-      }
+    const WishListSub = this.wishListService.getUserWishList().subscribe({
+      next:res=>this.wishList=res.data,
     });
+    this.subscription.add(WishListSub)
   }
+
   ngOnInit(): void {
-    this.getProducts();
-    this.getCategories();
-    this.getBrands();
+    this.getHomePageAllData();
     this.getWishList();
   }
-  ngDoCheck(): void {
-    if(this.wishListEmitter){
-      this.getWishList();
-    }
-  }
+
   ngOnDestroy(): void {
-    // unsubscribe getProductsSubscription , getBrandsSubscription و wishListSubscription and getCategoriesSubscription.
-    this.getProductsSubscription.unsubscribe();
-    this.getBrandsSubscription.unsubscribe();
-    this.getCategoriesSubscription.unsubscribe();
-    this.wishListSubscription.unsubscribe();
+    // unsubscribe subscription
+    this.subscription.unsubscribe();
   }
 }

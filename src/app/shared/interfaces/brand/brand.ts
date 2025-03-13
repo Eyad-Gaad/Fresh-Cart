@@ -1,8 +1,4 @@
-export interface Ibrand {
-    _id: string;
-    name: string;
-    slug: string;
-    image: string;
-    createdAt: string;
-    updatedAt: string;
+export interface Ibrand{
+    name:string,
+    image:string
 }

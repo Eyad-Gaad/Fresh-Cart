@@ -8,7 +8,7 @@
     </div>
     <ul class="flex flex-col gap-y-8">
         @for (wishProduct of wishList; track $index) {
-            <app-wish-product [wishProduct]="wishProduct" (ItemEmitter)="ItemEmitter=$event"></app-wish-product>
+            <app-wish-product [wishProduct]="wishProduct" [wishProductIndex]="$index" (removeWishProductEmitter)="removeWishProductEmitter=$event" (removeWishProductIndex)="removeWishProductIndex=$event"></app-wish-product>
         }
     </ul>
 </section>

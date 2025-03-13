@@ -35,17 +35,24 @@
             }
           }
         </div>
-        <div class="flex gap-x-4">
+        <div class="flex flex-wrap gap-y-4 justify-between items-center">
+          <div class="flex flex-wrap gap-x-4">
             <button type="submit" [disabled]="checkOutInformation.invalid" class="main-btn px-3 disabled:bg-green-400">Pay online
-                @if (OnlineSpinnerLoading) {
-                  <i class="fa-solid fa-spinner fa-spin"></i>
-                }
-              </button>
-              <button (click)="cashOrder()" type="button" [disabled]="checkOutInformation.invalid" class="main-btn px-3 disabled:bg-green-400">Cash Order
-                @if (cashSpinnerLoading) {
-                  <i class="fa-solid fa-spinner fa-spin"></i>
-                }
-              </button>
+              @if (OnlineSpinnerLoading) {
+                <i class="fa-solid fa-spinner fa-spin"></i>
+              }
+            </button>
+            <button (click)="cashOrder()" type="button" [disabled]="checkOutInformation.invalid" class="main-btn px-3 disabled:bg-green-400">Cash Order
+              @if (cashSpinnerLoading) {
+                <i class="fa-solid fa-spinner fa-spin"></i>
+              }
+            </button>
+          </div>
+          <button (click)="cancelPayment()" type="button" class="main-btn px-3 bg-red-600 hover:bg-red-700 focus:ring-red-600">Cancel Payement
+                  @if (false) {
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                  }
+          </button>
         </div>
       </form>
 </div>

@@ -1,21 +1,25 @@
 import { AuthService } from './../../../core/services/auth/auth.service';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component,inject, OnDestroy, OnInit} from '@angular/core';
 import { Router, RouterLink,RouterLinkActive } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { NavDirective } from '../../../shared/directive/nav/nav.directive';
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink,RouterLinkActive],
+  imports: [RouterLink,RouterLinkActive,NavDirective],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent implements OnInit,OnDestroy{
-  isLogin:boolean = false;
-  authsubscription!:Subscription;
-  // inject AuthService.
-   authService:AuthService = inject(AuthService);
-  ngOnInit(): void {
-    this.authsubscription = this.authService.userData.subscribe(()=>{
+  // Inject AuthService.
+  authService:AuthService = inject(AuthService);
+
+  isLogin!:boolean;
+  subscription:Subscription = new Subscription();
+
+  // methode to check if the user is logged or not.
+  checkUserLogged(){
+    const userDataSub = this.authService.userData.subscribe(()=>{
       if(this.authService.userData.getValue() == null){
         this.isLogin = false;
       }
@@ -23,8 +27,15 @@ export class NavbarComponent implements OnInit,OnDestroy{
         this.isLogin = true;
       }
     });
+    this.subscription.add(userDataSub);
   }
+
+  ngOnInit(): void {
+    this.checkUserLogged();
+  }
+
   ngOnDestroy(): void {
-    this.authsubscription.unsubscribe();
+    // unsubscribe subscription
+    this.subscription.unsubscribe();
   }
 }

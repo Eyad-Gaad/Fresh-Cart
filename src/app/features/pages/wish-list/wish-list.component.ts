@@ -11,35 +11,45 @@ import { Iproduct } from '../../../shared/interfaces/product/product';
   styleUrl: './wish-list.component.scss'
 })
 export class WishListComponent implements OnInit,DoCheck,OnDestroy{
-  ItemEmitter!:boolean; // 'flag' Coming from child component.
-  wishListCount!:number;
-  wishList!:Iproduct[];
-  getWishListSubscription!:Subscription;
   // Inject WishListService.
   wishListService:WishListService = inject(WishListService);
+
+  removeWishProductEmitter!:boolean;//come from child component
+  removeWishProductIndex!:number; //come from child component
+  wishListCount!:number;
+  wishList!:Iproduct[];
+  subscription:Subscription = new Subscription();
+
   //Get wishList
   getWishList(){
-    this.ItemEmitter = false;
-    this.getWishListSubscription = this.wishListService.getUserWishList().subscribe({
+    const getWishListSub = this.wishListService.getUserWishList().subscribe({
       next:(res)=>{
         this.wishListCount = res.count;
         this.wishList = res.data;
-      },
-      error:(err)=>{
-        console.log(err);
       }
     });
+    this.subscription.add(getWishListSub);
   }
+
+  //Remove product from wishList (locally but the request method in child component).
+  removeProductFromWishList(){
+    if(this.removeWishProductEmitter===true){
+      this.removeWishProductEmitter = false;// to stop looping at DoCheck hook. 
+      this.wishList.splice(this.removeWishProductIndex,1)
+      this.wishListCount--;
+    }
+  }
+
   ngOnInit(): void {
     this.getWishList();
   }
+
   ngDoCheck(): void {
-    if(this.ItemEmitter===true){
-      this.getWishList();
-    }
+    this.removeProductFromWishList();
   }
+
   ngOnDestroy(): void {
-    // unsubscribe getWishListSubscription.
-    this.getWishListSubscription.unsubscribe();
+    // unsubscribe subscription.
+    this.subscription.unsubscribe();
   }
 }

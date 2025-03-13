@@ -13,13 +13,13 @@
     </div>    
 <div class="relative lg:col-span-3 bg-gray-100 flex flex-col justify-between p-3 rounded-lg">
         <div>
-            <h1 class="mb-3 text-2xl font-bold">{{product.title}}</h1>
-            <p>{{product.description}}</p>
+            <h1 class="mb-3 text-2xl font-bold">{{product.title|titlecase}}</h1>
+            <p>{{product.description|lowercase}}</p>
         </div>
         <div class="mt-7">
-            <span class="block text-gray-500">{{product.category.name}}</span>
+            <span class="block text-gray-500">{{product.category.name|lowercase}}</span>
             <ul class="flex justify-between">
-                <li class="font-semibold">{{product.price}} EGP</li>
+                <li class="font-semibold">{{product.price|currency:'EGP'}}</li>
                 <li class="text-gray-500"><i class="fas fa-star text-yellow-300"></i> {{product.ratingsAverage}}</li>
             </ul>
             <button (click)="addToCart(pId)" [disabled]="addToCartLoading"  class="main-btn w-full mt-4 flex items-center justify-center gap-x-7 text-[1.1rem]">Add to cart <i class="fa-solid fa-cart-plus"></i>
@@ -28,7 +28,7 @@
                   }
             </button>
         </div>
-        @if (!addToWishProductLoading) {
+        @if (!updateWishProductLoading) {
             @if(!heartwishFlag){
               <i (click)="addToWishList(product._id)" class="absolute end-0 -translate-y-1/2 text-3xl md:text-3xl fa-solid fa-heart opacity-70 hover:scale-[1.4] hover:cursor-pointer transition-transform duration-[0.3s]"></i>
             }

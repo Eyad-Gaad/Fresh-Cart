@@ -15,41 +15,50 @@ export class AuthService {
       this.saveUserData();
     }
   }
-  userData:BehaviorSubject<any> = new BehaviorSubject(null);
+
   // Inject HttpClient Service , router service and BrowserPlatformService.
   http:HttpClient = inject(HttpClient);
   router:Router = inject(Router);
   browserPlatformService:BrowserPlatformService = inject(BrowserPlatformService);
-  // signUp Api Request.
-  signUp(signUpForm:object):Observable<any>{
-    return this.http.post(`${env.baseUrl}/api/v1/auth/signup`,signUpForm);
-  }
-  // login Api Request.
-  logIn(logInForm:object):Observable<any>{
-    return this.http.post(`${env.baseUrl}/api/v1/auth/signin`,logInForm);
-  }
-  // forget password Api Request.
-  forgetPassword(email:object):Observable<any>{
-    return this.http.post(`${env.baseUrl}/api/v1/auth/forgotPasswords`,email);
-  }
-  // verify reset code Api Request.
-  verifyResetCode(resetCode:string):Observable<any>{
-    return this.http.post(`${env.baseUrl}/api/v1/auth/verifyResetCode`,{resetCode:resetCode});
-  }
-  // reset password Api Request.
-  resetPassword(resetInformation:object):Observable<any>{
-    return this.http.put(`${env.baseUrl}/api/v1/auth/resetPassword`,resetInformation);
-  }
-  // logout method
-  logOut():void{
-    localStorage.removeItem("userToken");
-    this.userData.next(null);
-    this.router.navigate(['/logIn']);
-  }
+
+  userData:BehaviorSubject<any> = new BehaviorSubject(null);
+
   // decode the user token and save the user data.
   saveUserData(){
     if(localStorage.getItem('userToken')!=null){
       this.userData.next(jwtDecode(JSON.stringify(localStorage.getItem('userToken'))));
     }
+  }
+
+  // signUp Api Request.
+  signUp(signUpForm:object):Observable<any>{
+    return this.http.post(`${env.baseUrl}/api/v1/auth/signup`,signUpForm);
+  }
+
+  // login Api Request.
+  logIn(logInForm:object):Observable<any>{
+    return this.http.post(`${env.baseUrl}/api/v1/auth/signin`,logInForm);
+  }
+
+  // forget password Api Request.
+  forgetPassword(email:object):Observable<any>{
+    return this.http.post(`${env.baseUrl}/api/v1/auth/forgotPasswords`,email);
+  }
+
+  // verify reset code Api Request.
+  verifyResetCode(resetCode:string):Observable<any>{
+    return this.http.post(`${env.baseUrl}/api/v1/auth/verifyResetCode`,{resetCode:resetCode});
+  }
+
+  // reset password Api Request.
+  resetPassword(resetInformation:object):Observable<any>{
+    return this.http.put(`${env.baseUrl}/api/v1/auth/resetPassword`,resetInformation);
+  }
+
+  // logout method
+  logOut():void{
+    localStorage.removeItem("userToken");
+    this.userData.next(null);
+    this.router.navigate(['/logIn']);
   }
 }

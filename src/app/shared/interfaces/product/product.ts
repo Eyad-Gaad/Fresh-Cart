@@ -1,7 +1,9 @@
+import { Icategory } from "../category/category";
+
 export interface Iproduct {
   sold: number;
   images: string[];
-  subcategory: Isubcategory[];
+  subcategory: Icategory[];
   ratingsQuantity: number;
   _id: string;
   title: string;
@@ -16,18 +18,4 @@ export interface Iproduct {
   createdAt: string;
   updatedAt: string;
   id: string;
-}
-
-export interface Icategory {
-  _id: string;
-  name: string;
-  slug: string;
-  image: string;
-}
-
-export interface Isubcategory {
-  _id: string;
-  name: string;
-  slug: string;
-  category: string;
 }

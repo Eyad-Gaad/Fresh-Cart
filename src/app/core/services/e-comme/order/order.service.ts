@@ -8,17 +8,15 @@ import { IshippingAddress } from '../../../../shared/interfaces/ShippingAddress/
   providedIn: 'root'
 })
 export class OrderService {
-  // user token
-  private readonly userToken:string=localStorage.getItem('userToken')!;
   //  Inject HttpClient.
   private readonly httpClient:HttpClient = inject(HttpClient);
   // Pay Online function.
   onlineCheckOut(cId:string,checkOutInformation:IshippingAddress):Observable<any>{
-    return this.httpClient.post(`${env.baseUrl}/api/v1/orders/checkout-session/${cId}?url=${env.hosting}`,{shippingAddress:checkOutInformation},{headers:{token:this.userToken}});
+    return this.httpClient.post(`${env.baseUrl}/api/v1/orders/checkout-session/${cId}?url=${env.hosting}`,{shippingAddress:checkOutInformation});
   }
   // Cash Order function.
   cashCheckOut(cId:string,checkOutInformation:IshippingAddress):Observable<any>{
-    return this.httpClient.post(`${env.baseUrl}/api/v1/orders/${cId}`,{shippingAddress:checkOutInformation},{headers:{token:this.userToken}});
+    return this.httpClient.post(`${env.baseUrl}/api/v1/orders/${cId}`,{shippingAddress:checkOutInformation});
   }
   // Get User orders
   getUserOrders(userId:string):Observable<any>{

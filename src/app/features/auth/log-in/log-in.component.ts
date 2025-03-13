@@ -11,22 +11,25 @@ import { Router, RouterLink } from '@angular/router';
   styleUrl: './log-in.component.scss'
 })
 export class LogInComponent implements OnDestroy{
-  apiSubscription!:Subscription;
-  loading:boolean=false;
-  errorMessage!:string;
   // Inject AuthService and router
   authService:AuthService = inject(AuthService);
   router:Router = inject(Router);
-  // LogInform object.
+
+  loading:boolean=false;
+  errorMessage!:string;
+  subscription:Subscription = new Subscription();
+
+  // LogInform.
   logInForm:FormGroup = new FormGroup({
     email:new FormControl(null,[Validators.required,Validators.email]),
     password:new FormControl(null,[Validators.required,Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,30}$/)])
   });
-  // submit.
-  submit(){
+
+  // logIn function.
+  logIn(){
     if(this.logInForm.valid){
       this.loading = true;
-      this.apiSubscription = this.authService.logIn(this.logInForm.value).subscribe({
+      const logInSub = this.authService.logIn(this.logInForm.value).subscribe({
         next:(res)=>{
           if(res.message==='success'){
             localStorage.setItem('userToken',res.token);
@@ -40,12 +43,12 @@ export class LogInComponent implements OnDestroy{
           this.loading = false;
         }
       });
+      this.subscription.add(logInSub)
     }
   }
+
   ngOnDestroy(): void {
-    // unsubscribe api observation. 
-    if(this.apiSubscription){
-      this.apiSubscription.unsubscribe()
-    }
+    // unsubscribe subscription
+    this.subscription.unsubscribe();
   }
 }

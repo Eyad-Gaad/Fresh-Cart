@@ -1,6 +1,6 @@
 <!-- Login Component -->
 <div class="w-[70%] mx-auto">
-    <form [formGroup]="logInForm" class="w-full" (ngSubmit)="submit()">
+    <form [formGroup]="logInForm" class="w-full" (ngSubmit)="logIn()">
         @if (errorMessage!=null) {
             <app-alert [alertType]="'logIn'" [alertMessage]="errorMessage"></app-alert>
           }
