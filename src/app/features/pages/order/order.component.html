@@ -1,7 +1,6 @@
 <!-- order component -->
-<div class="w-[70%] mx-auto">
-    <form [formGroup]="checkOutInformation" (ngSubmit)="payOnline()" class="w-full">
-        <h1 class="text-3xl mb-7 font-semibold">Check out Information :</h1>
+    <form [formGroup]="checkOutInformation" (ngSubmit)="payOnline()" class="w-[85%] sm:w-[75%] md:w-[65%] lg:w-[55%] mx-auto">
+        <h1 class="text-3xl mb-7 font-bold"><span class="text-green-700">Check out</span> Information :</h1>
         <div class="mb-4">
           <label for="details" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Details :</label>
           <input formControlName="details" type="text" id="details" class="input" placeholder="Enter Details..."/>
@@ -55,4 +54,3 @@
           </button>
         </div>
       </form>
-</div>

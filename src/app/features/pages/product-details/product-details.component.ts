@@ -1,5 +1,5 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute} from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ProductsService } from '../../../core/services/e-comme/products/products.service';
 import { Iproduct } from '../../../shared/interfaces/product/product';
@@ -9,6 +9,7 @@ import { CarouselModule } from 'ngx-owl-carousel-o';
 import { OwlOptions } from 'ngx-owl-carousel-o';
 import { WishListService } from '../../../core/services/e-comme/wishList/wish-list.service';
 import { CurrencyPipe, LowerCasePipe, TitleCasePipe } from '@angular/common';
+import { AuthService } from '../../../core/services/auth/auth.service';
 @Component({
   selector: 'app-product-details',
   imports: [CarouselModule,TitleCasePipe,LowerCasePipe,CurrencyPipe],
@@ -16,12 +17,14 @@ import { CurrencyPipe, LowerCasePipe, TitleCasePipe } from '@angular/common';
   styleUrl: './product-details.component.scss'
 })
 export class ProductDetailsComponent implements OnInit,OnDestroy{
-  // Inject ActivatedRoute , ProductsService , CartService , wishListService and ToastrService. 
+  // Inject ActivatedRoute , ProductsService , CartService , AuthService , wishListService , router  and ToastrService. 
   activatedRoute:ActivatedRoute = inject(ActivatedRoute);
   productsService:ProductsService = inject(ProductsService);
   cartService:CartService=inject(CartService);
+  authService:AuthService=inject(AuthService);
   toastrService :ToastrService =inject(ToastrService );
   wishListService:WishListService=inject(WishListService);
+  router:Router=inject(Router);
 
   // Property for owl carousel.
   customOptions: OwlOptions = {
@@ -55,8 +58,8 @@ export class ProductDetailsComponent implements OnInit,OnDestroy{
   pId!:string;
   product!:Iproduct;
   wishList!:Iproduct[];
-  subscription:Subscription=new Subscription();
-    
+  subscription:Subscription=new Subscription();    
+
   // get product id from activatedRoute for calling a specific product API.
   getProductId(){
     const paramMapSub = this.activatedRoute.paramMap.subscribe({
@@ -79,15 +82,17 @@ export class ProductDetailsComponent implements OnInit,OnDestroy{
 
   // get wishList
   getWishList(){
-    const getWishListSub = this.wishListService.getUserWishList().subscribe({
-      next:(res)=>{
-        if(res.status==='success'){
-          this.wishList = res.data;
-          this.checkWishList();
+    if(this.authService.checkAuthorizedUser()){
+      const getWishListSub = this.wishListService.getUserWishList().subscribe({
+        next:(res)=>{
+          if(res.status==='success'){
+            this.wishList = res.data;
+            this.checkWishList();
+          }
         }
-      }
-    });
-      this.subscription.add(getWishListSub);
+      });
+        this.subscription.add(getWishListSub);
+    }
   }
 
   //method to check if the product at wishList or not fired after loaded wishlist , note :- it loop and make condition based on pId property comming from routing data (ActivatedRoute) to guarantee the pId come before wishlist array cause of (async api).
@@ -101,44 +106,57 @@ export class ProductDetailsComponent implements OnInit,OnDestroy{
 
   // Add to wishlist
   addToWishList(pId:string){
-     this.updateWishProductLoading = true;
-     const addToWishListSub = this.wishListService.addToUserWishList(pId).subscribe({
-       next:(res)=>{
-        if(res.status==='success'){
-          this.updateWishProductLoading = false;
-          this.heartwishFlag = true;
-          this.toastrService.success(`${this.product.title} is added to your wish list`,'Cart Operations');
-        }
-      },
-      error:()=>{
-        this.updateWishProductLoading = false;
-        this.toastrService.error(`There is a problem , try again`,'Cart Operations');
-      }
-    });
-    this.subscription.add(addToWishListSub)
+    if(this.authService.checkAuthorizedUser()){
+      this.updateWishProductLoading = true;
+      const addToWishListSub = this.wishListService.addToUserWishList(pId).subscribe({
+        next:(res)=>{
+         if(res.status==='success'){
+           this.updateWishProductLoading = false;
+           this.heartwishFlag = true;
+           this.toastrService.success(`${this.product.title} is added to your wish list`,'Cart Operations');
+         }
+       },
+       error:()=>{
+         this.updateWishProductLoading = false;
+         this.toastrService.error(`There is a problem , try again`,'Cart Operations');
+       }
+     });
+     this.subscription.add(addToWishListSub)
+    }
+    else{
+      this.router.navigate(['/logIn']);
+      this.toastrService.error('You are not authorized , please LogIn','Authentication');
+    }
   }
 
   // Remove from wishList method.
   removeFromWishList(pId:string){
-    this.updateWishProductLoading = true;
-    const removeWishListSub = this.wishListService.removeFromUserWishList(pId).subscribe({
-      next:(res)=>{
-        if(res.status==='success'){
+    if(this.authService.checkAuthorizedUser()){
+      this.updateWishProductLoading = true;
+      const removeWishListSub = this.wishListService.removeFromUserWishList(pId).subscribe({
+        next:(res)=>{
+          if(res.status==='success'){
+            this.updateWishProductLoading = false;
+            this.heartwishFlag = false;
+            this.toastrService.success(`${this.product.title} is removed from your wish list`,'Cart Operations');
+          }
+        },
+        error:()=>{
           this.updateWishProductLoading = false;
-          this.heartwishFlag = false;
-          this.toastrService.success(`${this.product.title} is removed from your wish list`,'Cart Operations');
+          this.toastrService.error(`There is a problem , try again`,'Cart Operations');
         }
-      },
-      error:()=>{
-        this.updateWishProductLoading = false;
-        this.toastrService.error(`There is a problem , try again`,'Cart Operations');
-      }
-    });
-    this.subscription.add(removeWishListSub);
+      });
+      this.subscription.add(removeWishListSub);
+    }
+    else{
+      this.router.navigate(['/logIn']);
+      this.toastrService.error('You are not authorized , please LogIn','Authentication');
+    }
   }
 
   // Add to cart.
   addToCart(pId:string){
+    if(this.authService.checkAuthorizedUser()){
       this.addToCartLoading=true;
       const addToCartSub = this.cartService.addToUserCart(pId).subscribe({
         next:(res)=>{
@@ -156,6 +174,11 @@ export class ProductDetailsComponent implements OnInit,OnDestroy{
         }
       });
       this.subscription.add(addToCartSub);
+    }
+    else{
+      this.router.navigate(['/logIn']);
+      this.toastrService.error('You are not authorized , please LogIn','Authentication');
+    }
   }
 
   ngOnInit(): void {

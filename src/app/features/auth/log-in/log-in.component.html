@@ -1,10 +1,9 @@
 <!-- Login Component -->
-<div class="w-[70%] mx-auto">
-    <form [formGroup]="logInForm" class="w-full" (ngSubmit)="logIn()">
+    <form [formGroup]="logInForm" class="w-[85%] sm:w-[75%] md:w-[65%] lg:w-[55%] mx-auto" (ngSubmit)="logIn()">
         @if (errorMessage!=null) {
             <app-alert [alertType]="'logIn'" [alertMessage]="errorMessage"></app-alert>
           }
-        <h1 class="text-3xl mb-7 font-semibold">LogIn Now :</h1>
+        <h1 class="text-3xl mb-7 font-bold"><span class="text-green-700">LogIn</span> Now :</h1>
         <div class="mb-4">
           <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">email :</label>
           <input formControlName="email" type="email" id="email" class="input" placeholder="Enter your email" required />
@@ -38,4 +37,3 @@
         </button>
         </div>
     </form>
-</div>

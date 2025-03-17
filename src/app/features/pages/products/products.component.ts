@@ -6,6 +6,7 @@ import { WishListService } from '../../../core/services/e-comme/wishList/wish-li
 import { FormsModule } from '@angular/forms';
 import { ProductSearchPipe } from '../../../shared/pipes/productSearch/product-search.pipe';
 import { ProductCardComponent } from '../../../shared/components/product-card/product-card.component';
+import { AuthService } from '../../../core/services/auth/auth.service';
 
 @Component({
   selector: 'app-products',
@@ -14,9 +15,10 @@ import { ProductCardComponent } from '../../../shared/components/product-card/pr
   styleUrl: './products.component.scss'
 })
 export class ProductsComponent implements OnInit,OnDestroy{
-  //Inject productsService , WishListService.
+  //Inject productsService , WishListService , AuthService.
   productsService:ProductsService = inject(ProductsService);
   wishListService:WishListService=inject(WishListService);
+  authService:AuthService = inject(AuthService);
 
   search:string='';
   products!:Iproduct[];
@@ -35,14 +37,16 @@ export class ProductsComponent implements OnInit,OnDestroy{
 
   // get wishList
   getWishList(){
-    const wishListSub = this.wishListService.getUserWishList().subscribe({
-      next:(res)=>{
-        if(res.status==='success'){
-          this.wishList = res.data;
+    if(this.authService.checkAuthorizedUser()){
+      const wishListSub = this.wishListService.getUserWishList().subscribe({
+        next:(res)=>{
+          if(res.status==='success'){
+            this.wishList = res.data;
+          }
         }
-      }
-    });
-    this.subscription.add(wishListSub)
+      });
+      this.subscription.add(wishListSub)
+    }
   }
 
   ngOnInit(): void {

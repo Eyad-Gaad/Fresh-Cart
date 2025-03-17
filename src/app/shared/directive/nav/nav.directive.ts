@@ -11,10 +11,10 @@ export class NavDirective{
   renderer2:Renderer2 = inject(Renderer2);
   @HostListener('window:scroll') onScroll(){
     if(scrollY>0){
-      this.renderer2.addClass(this.navbar.nativeElement,'py-3')
+      this.renderer2.addClass(this.navbar.nativeElement,'py-7')
     }
     else{
-      this.renderer2.removeClass(this.navbar.nativeElement,'py-3')
+      this.renderer2.removeClass(this.navbar.nativeElement,'py-7')
     }
   }
 }

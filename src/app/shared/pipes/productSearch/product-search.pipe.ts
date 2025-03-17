@@ -7,7 +7,9 @@ import { Iproduct } from '../../interfaces/product/product';
 export class ProductSearchPipe implements PipeTransform {
   // pipe for search (filter) based search word. 
   transform(products:Iproduct[],search:string):Iproduct[]{
+    if(!products){
+      return [];
+    }
     return products.filter(product=>product.title.toLowerCase().includes(search.toLowerCase()));
   }
-
 }

@@ -3,7 +3,7 @@
 <div class="my-11 w-3/4 md:w-1/2 mx-auto">
     <input type="text" class="input" placeholder="search..." [(ngModel)]="search">
  </div>
-<section class="container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8 items-stretch">
+<section class="w-[90%] mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8 items-stretch">
     @for (brand of brands|brandSearch:search; track $index) {
         <app-brand-card [brand]="brand" (modal)="modal = $event" (brandImg)="brandImg = $event"></app-brand-card>
     }

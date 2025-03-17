@@ -3,10 +3,16 @@
 @tailwind components;
 @tailwind utilities;
 
-//Custome Component
+//Custome reusable Classes Components
 @layer components{
     .main-btn{
-        @apply p-2 text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 transition-colors duration-[0.2s]
+        @apply cursor-pointer p-2 text-white bg-green-700 hover:text-white hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 transition-colors duration-[0.2s]
+    }
+    .routerLink{
+      @apply w-1/2 lg:w-auto cursor-pointer p-2 font-semibold rounded-md transition-colors duration-[0.3s] block text-gray-500 hover:text-green-700 md:dark:hover:text-green-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700
+    }
+    .routerLinkActive{
+      @apply bg-green-700 text-white hover:text-white
     }
     .input{
       @apply  bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500

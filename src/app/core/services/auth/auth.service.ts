@@ -30,6 +30,14 @@ export class AuthService {
     }
   }
 
+  // methode to check if authorized user or not (used for cart and wishlist operation).
+  checkAuthorizedUser():boolean{
+    if(this.userData.getValue()!=null){
+      return true;
+    }
+    return false;
+  }
+
   // signUp Api Request.
   signUp(signUpForm:object):Observable<any>{
     return this.http.post(`${env.baseUrl}/api/v1/auth/signup`,signUpForm);

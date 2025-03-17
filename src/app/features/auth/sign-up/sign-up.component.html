@@ -1,7 +1,6 @@
 <!-- signUp component -->
-<div class="w-[70%] mx-auto">
-<form [formGroup]="signUpForm" class="w-full" (ngSubmit)="signUp()">
-    <h1 class="text-3xl mb-7 font-semibold">SignUp Now :</h1>
+<form [formGroup]="signUpForm" class="w-[85%] sm:w-[75%] md:w-[65%] lg:w-[55%] mx-auto" (ngSubmit)="signUp()">
+    <h1 class="text-3xl mb-7 font-bold"><span class="text-green-700">SignUp</span> Now :</h1>
     @if (errorMessage!=null) {
       <app-alert [alertType]="'signUp'" [alertMessage]="errorMessage"></app-alert>
     }
@@ -73,4 +72,3 @@
       </button>
     </div>
 </form>
-</div>

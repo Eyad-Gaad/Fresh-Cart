@@ -1,3 +1,6 @@
+import { AuthService } from './../../../core/services/auth/auth.service';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import {Subscription } from 'rxjs';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Iproduct } from '../../../shared/interfaces/product/product';
@@ -17,9 +20,12 @@ import { ProductCardComponent } from '../../../shared/components/product-card/pr
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit,OnDestroy{
-  // Inject ForkJoinApiService(service call 3 forkJoin api end points (products,brands,categories), wishListService and Router.
+  // Inject ForkJoinApiService(service call 3 forkJoin api end points (products,brands,categories), wishListService , AuthService , ToastrService  and Router.
   forkJoinApiService:ForkJoinApiService = inject(ForkJoinApiService);
   wishListService:WishListService = inject(WishListService);
+  authService:AuthService = inject(AuthService);
+  toastrService:ToastrService = inject(ToastrService);
+  router:Router = inject(Router);
 
   // Properties for owl carousel.
   customOptions1: OwlOptions = {
@@ -99,10 +105,12 @@ export class HomeComponent implements OnInit,OnDestroy{
 
   // Special api method for getWishList not with forkJoinApiService because forkJoinApiService is sharedReply unLike getWishList.
   getWishList(){
-    const WishListSub = this.wishListService.getUserWishList().subscribe({
+    if(this.authService.checkAuthorizedUser()){
+      const WishListSub = this.wishListService.getUserWishList().subscribe({
       next:res=>this.wishList=res.data,
-    });
-    this.subscription.add(WishListSub)
+     });
+      this.subscription.add(WishListSub)
+    }
   }
 
   ngOnInit(): void {

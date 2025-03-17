@@ -1,54 +1,25 @@
 <!-- navbar copmonent -->
-<nav appNav class="bg-white dark:bg-gray-900 fixed w-full z-[999] top-0 start-0 shadow-md border-b border-gray-200 dark:border-gray-600 duration-[0.3s]">
-    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto py-4 px-1">
-    <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
-        <img src="/images/freshcart-logo.svg" class="h-8" alt="FreshCart App">
-    </a>
-    <div class="flex lg:order-2 space-x-3 lg:space-x-0 rtl:space-x-reverse">
-        <div class="flex gap-x-4">
-          @if (!isLogin) {
-            <button routerLink="logIn" type="button" class="main-btn">LogIn</button>
-            <button routerLink="signUp" type="button" class="main-btn">SignUp</button>
-          }
-            @if (isLogin) {
-              <button (click)="authService.logOut()" type="button" class="main-btn bg-red-700 hover:bg-red-800">LogOut</button>
-            }
-        </div>
-        @if (isLogin) {
-          <button data-collapse-toggle="navbar-sticky" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-sticky" aria-expanded="false">
-            <span class="sr-only">Open main menu</span>
-            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
-            </svg>
-        </button>
+<nav appNav class="py-5 fixed top-0 right-0 left-0 z-[999] bg-white shadow-md border-b border-gray-200 dark:bg-gray-900 dark:border-gray-600 duration-[0.3s]">
+  <div class="w-[90%] mx-auto flex flex-wrap gap-y-7 justify-between items-center text-white">
+      <h1 class="w-[95%] text-3xl font-bold lg:w-auto text-black"><a href="#"><span class="text-green-700"><i class="fa-solid fa-cart-shopping me-2"></i>Fresh</span>Cart</a></h1>
+      <i (click)="dropDownNavbar()" class="w-[5%] fa-solid fa-bars text-2xl inline-block lg:w-auto lg:hidden cursor-pointer text-black"></i>
+        <ul #menu class="hidden w-full text-center flex-col items-center gap-y-3 lg:w-[60%] lg:justify-between lg:flex lg:flex-row">
+          <li routerLink="/home" routerLinkActive="routerLinkActive" class="routerLink">Home</li>
+          <li routerLink="/cart" routerLinkActive="routerLinkActive" class="routerLink">Cart</li>
+          <li routerLink="/wishList" routerLinkActive="routerLinkActive" class="routerLink">WishList</li>
+          <li routerLink="/products" routerLinkActive="routerLinkActive" class="routerLink">Products</li>
+          <li routerLink="/categories" routerLinkActive="routerLinkActive" class="routerLink">Categories</li>
+          <li routerLink="/brands" routerLinkActive="routerLinkActive" class="routerLink">Brands</li>
+          <li routerLink="/allorders" routerLinkActive="routerLinkActive" class="routerLink">All orders</li>
+      </ul>
+      <ul #menu class="hidden w-full text-center flex-col items-center gap-y-4 lg:w-auto lg:flex lg:flex-row lg:gap-x-6">
+        @if(!isLogin){
+          <li routerLink="/logIn" routerLinkActive="routerLinkActive text-white" type="button" class="routerLink w-1/2 lg:w-auto text-green-700 hover:routerLinkActive">LogIn</li>
+          <li routerLink="/signUp" routerLinkActive="routerLinkActive text-white" type="button" class="routerLink w-1/2 lg:w-auto text-green-700 hover:routerLinkActive">SignUp</li>
         }
-    </div>
-    @if (isLogin) {
-      <div class="items-center justify-between hidden w-full lg:flex lg:w-auto lg:order-1" id="navbar-sticky">
-        <ul class="flex flex-col text-center p-4 lg:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 lg:space-x-8 rtl:space-x-reverse lg:flex-row lg:mt-0 lg:border-0 lg:bg-white dark:bg-gray-800 lg:dark:bg-gray-900 dark:border-gray-700">
-          <li>
-            <a routerLink="/home" routerLinkActive="bg-green-700 text-white hover:text-white" class="p-2 rounded-md transition-colors duration-[0.3s] block text-gray-500 hover:text-green-700 md:dark:hover:text-green-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Home</a>
-          </li>
-          <li>
-            <a routerLink="/cart" routerLinkActive="bg-green-700 text-white hover:text-white" class="p-2 rounded-md transition-colors duration-[0.3s] block text-gray-500 hover:text-green-700 md:dark:hover:text-green-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Cart</a>
-          </li>
-          <li>
-            <a routerLink="/wishList" routerLinkActive="bg-green-700 text-white hover:text-white" class="p-2 rounded-md transition-colors duration-[0.3s] block text-gray-500 hover:text-green-700 md:dark:hover:text-green-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">wishList</a>
-          </li>
-          <li>
-            <a routerLink="/products" routerLinkActive="bg-green-700 text-white hover:text-white" class="p-2 rounded-md transition-colors duration-[0.3s] block text-gray-500 hover:text-green-700 md:dark:hover:text-green-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Products</a>
-          </li>
-          <li>
-            <a routerLink="/categories" routerLinkActive="bg-green-700 text-white hover:text-white" class="p-2 rounded-md transition-colors duration-[0.3s] block text-gray-500 hover:text-green-700 md:dark:hover:text-green-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Categories</a>
-          </li>
-          <li>
-            <a routerLink="/brands" routerLinkActive="bg-green-700 text-white hover:text-white" class="p-2 rounded-md transition-colors duration-[0.3s] block text-gray-500 hover:text-green-700 md:dark:hover:text-green-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Brands</a>
-          </li>
-          <li>
-            <a routerLink="/allorders" routerLinkActive="bg-green-700 text-white hover:text-white" class="p-2 rounded-md transition-colors duration-[0.3s] block text-gray-500 hover:text-green-700 md:dark:hover:text-green-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Orders</a>
-          </li>
-        </ul>
-      </div>
-    }
-    </div>
+        @else {
+          <li (click)="authService.logOut()" type="button" class="w-1/2 lg:w-auto main-btn bg-transparent text-red-700 hover:bg-red-800">LogOut</li>
+        }
+      </ul>
+  </div>
 </nav>
