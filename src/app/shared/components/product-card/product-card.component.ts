@@ -1,6 +1,6 @@
 import { AuthService } from './../../../core/services/auth/auth.service';
 import { WishListService } from './../../../core/services/e-comme/wishList/wish-list.service';
-import { Component, inject, Input, OnDestroy, OnInit} from '@angular/core';
+import { Component, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import { Iproduct } from '../../interfaces/product/product';
 import { Router, RouterLink } from '@angular/router';
 import { CartService } from '../../../core/services/e-comme/cart/cart.service';
@@ -15,7 +15,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   templateUrl: './product-card.component.html',
   styleUrl: './product-card.component.scss'
 })
-export class ProductCardComponent  implements OnInit,OnDestroy{
+export class ProductCardComponent  implements OnInit,OnChanges,OnDestroy{
     // Inject cartService , wishListService , authService , Router , toastrService.
     cartService:CartService=inject(CartService);
     wishListService:WishListService=inject(WishListService);
@@ -127,10 +127,13 @@ export class ProductCardComponent  implements OnInit,OnDestroy{
         this.toastrService.error('You are not authorized , please LogIn','Authentication');
       }
     }  
+
+    ngOnChanges(changes: SimpleChanges): void {
+      this.imgCover = this.product.imageCover;
+    }
   
     ngOnInit(): void {
-      this.checkWishList(); 
-      this.imgCover = this.product.imageCover;
+      this.checkWishList();
     }
   
     ngOnDestroy(): void {
