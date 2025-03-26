@@ -4,9 +4,10 @@ import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validator
 import { AlertComponent } from "../../../shared/components/alert/alert.component";
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 @Component({
   selector: 'app-sign-up',
-  imports: [ReactiveFormsModule, AlertComponent],
+  imports: [ReactiveFormsModule, AlertComponent,TranslatePipe],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.scss'
 })

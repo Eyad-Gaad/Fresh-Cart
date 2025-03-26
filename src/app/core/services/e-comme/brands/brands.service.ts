@@ -17,8 +17,8 @@ export class BrandsService {
   // Get all brands.
   getAllBrands():Observable<any>{
     if(!this.$shareReply){
-      this.$shareReply = this.httpClient.get<any>(`${env.baseUrl}/api/v1/brands`).pipe(
-        map(res=>res.data.map((Brand:any)=>{let brand:Ibrand = {name:Brand.name,image:Brand.image};return brand;}))
+      this.$shareReply = this.httpClient.get<any>(`${env.baseUrl}/api/v1/brands?limit=54`).pipe(
+        map(res=>res.data.map((Brand:any)=>{let brand:Ibrand = {name:Brand.name,image:Brand.image,_id:Brand._id};return brand;}))
       ).pipe(shareReplay(1)); 
     }
     return this.$shareReply;

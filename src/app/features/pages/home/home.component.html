@@ -1,16 +1,16 @@
 <!-- home component -->
- <h1 class="my-12 text-5xl text-center font-bold"><span class="text-green-700">FreshCart</span> E-commerce</h1>
+ <h1 class="my-12 text-5xl text-center font-bold dark:text-white">{{"Fresh cart E-commerce"|translate}}</h1>
  <div class="h-80 md:h-96 w-3/4 md:w-[45%] mx-auto overflow-hidden">
         <owl-carousel-o [options]="customOptions1">
           @for (category of categories; track category._id) {
             <ng-template carouselSlide [id]="category._id">
-              <img [src]="category.image" [alt]="category.name" [title]="category.name" class="h-80 md:h-96 object-fill rounded-lg">
+              <img [src]="category.image" [alt]="category.name" [title]="category.name" class="h-80 md:h-96 object-contain rounded-lg">
             </ng-template>
           }
           </owl-carousel-o>
  </div>
  <div class="mb-10 mt-20">
-    <h2 class="text-center mb-4 mt-12 text-4xl font-bold">Common Brands</h2>
+    <h2 class="text-center mb-4 mt-12 text-4xl font-bold dark:text-white">{{"Common Brands"|translate}}</h2>
     <owl-carousel-o [options]="customOptions2">
         @for (brand of brands; track $index) {
             <ng-template carouselSlide>
@@ -20,7 +20,7 @@
     </owl-carousel-o>
  </div>
  <div class="my-11 w-3/4 md:w-1/2 mx-auto">
-    <input type="text" class="input" placeholder="search product..." [(ngModel)]="search">
+    <input type="text" class="input" [placeholder]="'search product'|translate" [(ngModel)]="search">
  </div>
 <section class="w-[90%] mx-auto gap-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
     @if (products&&wishList) {

@@ -1,6 +1,7 @@
+import { Iproduct } from './../../../../shared/interfaces/product/product';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable, shareReplay } from 'rxjs';
+import { map, Observable, shareReplay } from 'rxjs';
 import { env } from '../../../../shared/environment/env';
 
 @Injectable({
@@ -16,7 +17,7 @@ export class ProductsService {
   // getAllProducts api request.
   getAllProducts():Observable<any>{
     if(!this.$shareReply){
-      this.$shareReply = this.httpClient.get(`${env.baseUrl}/api/v1/products`).pipe(shareReplay(1));
+      this.$shareReply = this.httpClient.get(`${env.baseUrl}/api/v1/products?limit=56`).pipe(shareReplay(1));
     }
     return this.$shareReply;
   }

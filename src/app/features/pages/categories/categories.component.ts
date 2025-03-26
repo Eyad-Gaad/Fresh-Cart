@@ -2,13 +2,13 @@ import { CategoryService } from './../../../core/services/e-comme/category/categ
 import { Component,inject, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CategoryCardComponent } from '../../../shared/components/category-card/category-card.component';
-import { SubcategoriesComponent } from "../../../shared/components/subcategories/subcategories.component";
 import { FormsModule } from '@angular/forms';
 import { CategorySearchPipe } from '../../../shared/pipes/categorySearch/category-search.pipe';
 import { Icategory } from '../../../shared/interfaces/category/category';
+import { TranslatePipe } from '@ngx-translate/core';
 @Component({
   selector: 'app-categories',
-  imports: [CategoryCardComponent, SubcategoriesComponent,FormsModule,CategorySearchPipe],
+  imports: [CategoryCardComponent,FormsModule,CategorySearchPipe,TranslatePipe],
   templateUrl: './categories.component.html',
   styleUrl: './categories.component.scss'
 })
@@ -17,8 +17,6 @@ export class CategoriesComponent implements OnInit,OnDestroy{
   categoryService:CategoryService = inject(CategoryService);
 
   search:string='';
-  deferFlag:boolean = false; // this value is default false but will change to true , coming from child (category card) component. 
-  categoryId!:string // come form child (category card) component.
   categories!:Icategory[];
   subscription:Subscription = new Subscription();
   

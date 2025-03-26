@@ -1,28 +1,29 @@
 <!-- product details component --> 
 <section class="w-[80%] mx-auto grid lg:grid-cols-5 gap-7">
-    <div class="lg:col-span-2 flex justify-center items-center">
+  <div class="lg:col-span-2 flex justify-center items-center">
         <div class="w-60">
             <owl-carousel-o [options]="customOptions">
                 @for (image of product.images; track $index) {
                     <ng-template carouselSlide>
                         <img [src]="image" [alt]="product.title" class="h-72 object-cover rounded-md">
-                      </ng-template>
+                    </ng-template>
                 }
               </owl-carousel-o>
         </div>
-    </div>    
-<div class="relative lg:col-span-3 bg-gray-100 flex flex-col justify-between p-3 rounded-lg">
+  </div>    
+  <div class="relative lg:col-span-3 bg-gray-100 flex flex-col justify-between p-3 rounded-lg">
         <div>
-            <h1 class="mb-3 text-2xl font-bold">{{product.title|titlecase}}</h1>
+            <h1 class="mb-3 text-2xl font-bold w-[90%]">{{product.title|titlecase}}</h1>
             <p>{{product.description|lowercase}}</p>
         </div>
         <div class="mt-7">
+          <span class="block font-semibold">{{product.brand.name|uppercase}}</span>
             <span class="block text-gray-500">{{product.category.name|lowercase}}</span>
             <ul class="flex justify-between">
-                <li class="font-semibold">{{product.price|currency:'EGP'}}</li>
+                <li class="font-semibold">{{product.price}} {{'EGP'|translate}}</li>
                 <li class="text-gray-500"><i class="fas fa-star text-yellow-300"></i> {{product.ratingsAverage}}</li>
             </ul>
-            <button (click)="addToCart(pId)" [disabled]="addToCartLoading"  class="main-btn w-full mt-4 flex items-center justify-center gap-x-7 text-[1.1rem]">Add to cart <i class="fa-solid fa-cart-plus"></i>
+            <button (click)="addToCart(pId)" [disabled]="addToCartLoading"  class="main-btn w-full mt-4 flex items-center justify-center gap-x-7 text-[1.1rem]">{{'Add to cart'|translate}} <i class="fa-solid fa-cart-plus"></i>
                 @if (addToCartLoading) {
                     <i class="fa-solid fa-spinner fa-spin"></i>
                   }
@@ -30,14 +31,38 @@
         </div>
         @if (!updateWishProductLoading) {
             @if(!heartwishFlag){
-              <i (click)="addToWishList(product._id)" class="absolute end-0 -translate-y-1/2 text-3xl md:text-3xl fa-solid fa-heart opacity-70 hover:scale-[1.4] hover:cursor-pointer transition-transform duration-[0.3s]"></i>
+              <i (click)="addToWishList(product._id)" class="absolute end-5 top-2 text-3xl md:text-3xl fa-regular fa-heart hover:scale-[1.4] hover:cursor-pointer transition-transform duration-[0.3s]"></i>
             }
             @else {
-              <i (click)="removeFromWishList(product._id)" class="absolute end-0 -translate-y-1/2 text-3xl md:text-3xl fa-solid fa-heart opacity-70 text-red-700 hover:scale-[1.4] hover:cursor-pointer transition-transform duration-[0.3s]"></i>
+              <i (click)="removeFromWishList(product._id)" class="absolute end-5 top-2 text-3xl md:text-3xl fa-solid fa-heart text-red-700 hover:scale-[1.4] hover:cursor-pointer transition-transform duration-[0.3s]"></i>
             }
           }
           @else {
-            <i class="absolute end-0 -translate-y-1/2 text-3xl md:text-3xl fa-solid fa-spinner fa-spin opacity-70"></i>
+            <i class="absolute end-5 top-2 text-3xl md:text-3xl fa-solid fa-spinner fa-spin opacity-70"></i>
           }
-</div>
+  </div>
 </section>
+<h2 #seemore (click)="seeMore()" class="mt-10 text-center text-2xl font-semibold cursor-pointer text-green-500 dark:text-blue-500">{{'See more like this'|translate}}</h2>
+@defer (on interaction(seemore)) {
+  <h1 class="my-12 text-5xl text-center font-bold dark:text-white">{{categoryName|uppercase}}</h1>
+  @if (similarProducts.length!=0) {
+    <!-- <div class="my-11 w-3/4 md:w-1/2 mx-auto">
+        <input type="text" class="input" [placeholder]="'search product'|translate" [(ngModel)]="search">
+     </div> -->
+    <section class="w-[90%] mx-auto gap-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 items-stretch">
+        @if (similarProducts&&wishList) {
+            @for (product of similarProducts; track product._id) {
+              <app-product-card [product]="product" [wishList]="wishList"></app-product-card>
+            }
+        }
+        @else{
+          @for (product of similarProducts; track product._id) {
+            <app-product-card [product]="product"></app-product-card>
+          }
+        }
+    </section>
+}
+@else{
+    <h2 class="mt-28 text-center text-5xl font-semibold dark:text-white">{{'products are not available'|translate}}</h2>
+}
+}

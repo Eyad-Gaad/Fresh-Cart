@@ -7,10 +7,11 @@ import { FormsModule } from '@angular/forms';
 import { ProductSearchPipe } from '../../../shared/pipes/productSearch/product-search.pipe';
 import { ProductCardComponent } from '../../../shared/components/product-card/product-card.component';
 import { AuthService } from '../../../core/services/auth/auth.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-products',
-  imports: [ProductCardComponent,FormsModule,ProductSearchPipe],
+  imports: [ProductCardComponent,FormsModule,ProductSearchPipe,TranslatePipe],
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss'
 })

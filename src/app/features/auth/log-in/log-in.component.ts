@@ -4,9 +4,10 @@ import { ReactiveFormsModule , FormGroup , FormControl, Validators } from '@angu
 import { AlertComponent } from '../../../shared/components/alert/alert.component';
 import { Subscription } from 'rxjs';
 import { Router, RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 @Component({
   selector: 'app-log-in',
-  imports: [ReactiveFormsModule,AlertComponent,RouterLink],
+  imports: [ReactiveFormsModule,AlertComponent,RouterLink,TranslatePipe],
   templateUrl: './log-in.component.html',
   styleUrl: './log-in.component.scss'
 })

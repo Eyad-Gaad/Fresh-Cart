@@ -6,16 +6,17 @@ import { Router, RouterLink } from '@angular/router';
 import { CartService } from '../../../core/services/e-comme/cart/cart.service';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
-import { CurrencyPipe, LowerCasePipe, TitleCasePipe } from '@angular/common';
+import { LowerCasePipe, TitleCasePipe, UpperCasePipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-product-card',
-  imports: [RouterLink,LowerCasePipe,TitleCasePipe,CurrencyPipe],
+  imports: [RouterLink,LowerCasePipe,TitleCasePipe,TranslatePipe,UpperCasePipe],
   templateUrl: './product-card.component.html',
   styleUrl: './product-card.component.scss'
 })
 export class ProductCardComponent  implements OnInit,OnDestroy{
-    // Inject cartService , wishListService , authService , Router and toastrService.
+    // Inject cartService , wishListService , authService , Router , toastrService.
     cartService:CartService=inject(CartService);
     wishListService:WishListService=inject(WishListService);
     authService:AuthService=inject(AuthService);
@@ -60,7 +61,8 @@ export class ProductCardComponent  implements OnInit,OnDestroy{
               this.addToCartLoading=false;
               if(this.heartwishFlag){
                 this.removeFromWishList(pId);
-              }
+              };
+              this.cartService.userCartCount.next(res.numOfCartItems);
             }
           },
           error:()=>{

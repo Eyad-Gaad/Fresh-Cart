@@ -13,9 +13,10 @@ import { Icategory } from '../../../shared/interfaces/category/category';
 import { ForkJoinApiService } from '../../../core/services/e-comme/forkJoinApi/fork-join-api.service';
 import { WishListService } from '../../../core/services/e-comme/wishList/wish-list.service';
 import { ProductCardComponent } from '../../../shared/components/product-card/product-card.component';
+import { TranslatePipe } from '@ngx-translate/core';
 @Component({
   selector: 'app-home',
-  imports: [ProductCardComponent,CarouselModule,FormsModule,ProductSearchPipe],
+  imports: [ProductCardComponent,CarouselModule,FormsModule,ProductSearchPipe,TranslatePipe],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
@@ -34,6 +35,7 @@ export class HomeComponent implements OnInit,OnDestroy{
     touchDrag: true,
     pullDrag: true,
     dots: false,
+    rtl:true,
     navSpeed: 700,
     navText: ['', ''],
     responsive: {
@@ -61,6 +63,7 @@ export class HomeComponent implements OnInit,OnDestroy{
     touchDrag: true,
     pullDrag: true,
     dots: false,
+    rtl:true,
     navSpeed: 700,
     navText: ['', ''],
     responsive: {

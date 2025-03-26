@@ -3,11 +3,12 @@ import { ICartProduct } from '../../interfaces/cartProduct/cart-product';
 import { CartService } from '../../../core/services/e-comme/cart/cart.service';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
-import { CurrencyPipe, TitleCasePipe } from '@angular/common';
+import { TitleCasePipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-cart-product',
-  imports: [TitleCasePipe,CurrencyPipe],
+  imports: [TitleCasePipe,TranslatePipe],
   templateUrl: './cart-product.component.html',
   styleUrl: './cart-product.component.scss'
 })
@@ -43,6 +44,7 @@ export class CartProductComponent implements OnDestroy{
         if(res.status==='success'){
           this.updateCart(res.data.products,res.numOfCartItems,res.data.totalCartPrice);
           this.removeItemLoading =false;
+          this.cartService.userCartCount.next(res.numOfCartItems);
           if(res.data.products.length===0){
             this.toastrService.success('All cart is clear','Cart Operations');
           }
@@ -65,6 +67,7 @@ export class CartProductComponent implements OnDestroy{
     const updateItemSub = this.cartService.updateToUserCart(pId,pCount).subscribe({
       next:(res)=>{
         this.updateItemLoading = false;
+        this.cartService.userCartCount.next(res.numOfCartItems);
         if(res.status==='success'){
           this.updateCart(res.data.products,res.numOfCartItems,res.data.totalCartPrice);
             if(res.data.products.length===0){

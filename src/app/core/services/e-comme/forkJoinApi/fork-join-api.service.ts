@@ -19,9 +19,9 @@ export class ForkJoinApiService {
   homeForkJoinApi():Observable<any>{
     if(!this.$shareReply){
       this.$shareReply=forkJoin(
-        {products:this.httpClient.get(`${env.baseUrl}/api/v1/products`),
+        {products:this.httpClient.get(`${env.baseUrl}/api/v1/products?limit=56`),
         categories:this.httpClient.get<any>(`${env.baseUrl}/api/v1/categories`).pipe(map(categories=>categories.data.map((category:any)=>{let mappedCategory:Icategory={_id:category._id,name:category.name,image:category.image};return mappedCategory}))),
-        brands:this.httpClient.get<any>(`${env.baseUrl}/api/v1/brands`).pipe(map(res=> res.data.map((brand:any)=>{let mappedBrand:Ibrand={name:brand.name,image:brand.image};return mappedBrand;})))}
+        brands:this.httpClient.get<any>(`${env.baseUrl}/api/v1/brands?limit=54`).pipe(map(res=> res.data.map((brand:any)=>{let mappedBrand:Ibrand={name:brand.name,image:brand.image,_id:brand._id};return mappedBrand;})))}
       ).pipe(shareReplay(1))
     }
   return this.$shareReply}

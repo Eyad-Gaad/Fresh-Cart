@@ -3,10 +3,11 @@ import { Component, DoCheck, inject, OnDestroy, OnInit } from '@angular/core';
 import { WishProductComponent } from "../../../shared/components/wish-product/wish-product.component";
 import { Subscription } from 'rxjs';
 import { Iproduct } from '../../../shared/interfaces/product/product';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-wish-list',
-  imports: [WishProductComponent],
+  imports: [WishProductComponent,TranslatePipe],
   templateUrl: './wish-list.component.html',
   styleUrl: './wish-list.component.scss'
 })

@@ -5,9 +5,10 @@ import { FormsModule } from '@angular/forms';
 import { BrandCardComponent } from '../../../shared/components/brand-card/brand-card.component';
 import { Ibrand } from '../../../shared/interfaces/brand/brand';
 import { BrandSearchPipe } from '../../../shared/pipes/brandSearch/brand-search.pipe';
+import { TranslatePipe } from '@ngx-translate/core';
 @Component({
   selector: 'app-brands',
-  imports: [BrandCardComponent,FormsModule,BrandSearchPipe],
+  imports: [BrandCardComponent,FormsModule,BrandSearchPipe,TranslatePipe],
   templateUrl: './brands.component.html',
   styleUrl: './brands.component.scss'
 })
@@ -16,8 +17,6 @@ export class BrandsComponent implements OnInit,OnDestroy{
   brandsService:BrandsService = inject(BrandsService);
   
   search:string = '';
-  brandImg!:string; // brand image come from child component.
-  modal:boolean = false; // Modal Flag (default false);
   brands!:Ibrand[];
   subscription:Subscription = new Subscription();
 
@@ -29,12 +28,6 @@ export class BrandsComponent implements OnInit,OnDestroy{
       }
     });
     this.subscription.add(getBrandsSub);
-  }
-
-  // close modal.
-  closeModal(){
-    this.modal = false;
-    this.brandImg = "";
   }
 
   ngOnInit(): void {

@@ -54,13 +54,18 @@ export class AuthService {
   }
 
   // verify reset code Api Request.
-  verifyResetCode(resetCode:string):Observable<any>{
-    return this.http.post(`${env.baseUrl}/api/v1/auth/verifyResetCode`,{resetCode:resetCode});
+  verifyResetCode(resetCode:object):Observable<any>{
+    return this.http.post(`${env.baseUrl}/api/v1/auth/verifyResetCode`,resetCode);
   }
 
   // reset password Api Request.
   resetPassword(resetInformation:object):Observable<any>{
     return this.http.put(`${env.baseUrl}/api/v1/auth/resetPassword`,resetInformation);
+  }
+
+  // change password Api Request
+  changePassword(changePasswordObject:object):Observable<any>{
+    return this.http.put(`${env.baseUrl}/api/v1/users/changeMyPassword`,changePasswordObject);
   }
 
   // logout method

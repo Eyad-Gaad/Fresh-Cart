@@ -5,9 +5,10 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AlertComponent } from '../../../shared/components/alert/alert.component';
+import { TranslatePipe } from '@ngx-translate/core';
 @Component({
   selector: 'app-order',
-  imports: [ReactiveFormsModule,AlertComponent],
+  imports: [ReactiveFormsModule,AlertComponent,TranslatePipe],
   templateUrl: './order.component.html',
   styleUrl: './order.component.scss'
 })
@@ -26,9 +27,9 @@ export class OrderComponent implements OnInit,OnDestroy{
 
   // checkOutInformation form.
   checkOutInformation:FormGroup = new FormGroup({
-    details:new FormControl(null,[Validators.maxLength(200)]),
+    details:new FormControl(null,[Validators.pattern(/^.{0,200}$/)]),
     phone: new FormControl(null,[Validators.required,Validators.pattern(/^(01)[0125][0-9]{8}$/)]),
-    city: new FormControl(null,[Validators.required,Validators.pattern(/^.{2,50}$/)])
+    city: new FormControl(null,[Validators.required,Validators.pattern(/^.{2,20}$/)])
   });
 
   // get cart ID from ActivatedRoute service.

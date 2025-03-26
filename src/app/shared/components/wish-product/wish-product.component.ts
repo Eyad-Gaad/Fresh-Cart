@@ -4,11 +4,12 @@ import { Component, EventEmitter, inject, Input, OnDestroy, Output } from '@angu
 import { Iproduct } from '../../interfaces/product/product';
 import { Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
-import { CurrencyPipe, TitleCasePipe } from '@angular/common';
+import { TitleCasePipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-wish-product',
-  imports: [TitleCasePipe,CurrencyPipe],
+  imports: [TitleCasePipe,TranslatePipe],
   templateUrl: './wish-product.component.html',
   styleUrl: './wish-product.component.scss'
 })
@@ -57,6 +58,7 @@ export class WishProductComponent implements OnDestroy{
         if(res.status==='success'){
           this.addToCartLoading = false;
           this.toastrService.success(`${this.wishProduct.title} added successfully to your cart`,'Cart Operations');
+          this.cartService.userCartCount.next(res.numOfCartItems);
           this.removeFromWishList(pId);
         }
       },

@@ -5,10 +5,11 @@ import { Component, inject, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AlertComponent } from '../../../shared/components/alert/alert.component';
 import { Subscription } from 'rxjs';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-forget-password',
-  imports: [ReactiveFormsModule,AlertComponent],
+  imports: [ReactiveFormsModule,AlertComponent,TranslatePipe],
   templateUrl: './forget-password.component.html',
   styleUrl: './forget-password.component.scss'
 })
@@ -29,12 +30,7 @@ export class ForgetPasswordComponent implements OnDestroy{
 
   // reset code form.
   resetCodeForm:FormGroup = new FormGroup({
-    num1:new FormControl(null,[Validators.required,Validators.pattern(/^\d{1}$/)]),
-    num2:new FormControl(null,[Validators.required,Validators.pattern(/^\d{1}$/)]),
-    num3:new FormControl(null,[Validators.required,Validators.pattern(/^\d{1}$/)]),
-    num4:new FormControl(null,[Validators.required,Validators.pattern(/^\d{1}$/)]),
-    num5:new FormControl(null,[Validators.required,Validators.pattern(/^\d{1}$/)]),
-    num6:new FormControl(null,[Validators.required,Validators.pattern(/^\d{1}$/)]),
+    resetCode:new FormControl(null,[Validators.required,Validators.pattern(/^\d{1,6}$/)])
   });
 
   // reset password form.
@@ -70,10 +66,11 @@ export class ForgetPasswordComponent implements OnDestroy{
   
   // resetCode method.
   resetCode(){
+    console.log(this.resetCodeForm.value);
     if(this.resetCodeForm.valid){
       this.loadingSpinner = true;
-      const resetCodeSub = this.authService.verifyResetCode(`${this.resetCodeForm.get('num1')?.value}${this.resetCodeForm.get('num2')?.value}${this.resetCodeForm.get('num3')?.value}${this.resetCodeForm.get('num4')?.value}${this.resetCodeForm.get('num5')?.value}${this.resetCodeForm.get('num6')?.value}`).subscribe({
-        next:(res)=>{
+      const resetCodeSub = this.authService.verifyResetCode(this.resetCodeForm.value).subscribe({
+        next:()=>{
           this.loadingSpinner = false;
           this.inputDisplay = 2;
         },
@@ -90,7 +87,7 @@ export class ForgetPasswordComponent implements OnDestroy{
       if(this.resetPasswordForm.valid){
         this.loadingSpinner = true;
         const resetPasswordSub = this.authService.resetPassword(this.resetPasswordForm.value).subscribe({
-          next:(res)=>{
+          next:()=>{
             this.loadingSpinner = false;
             this.toastrService.success(`Now you have a new password , LogIn Now`,`Authentication`);
             this.router.navigate([`/logIn`]);

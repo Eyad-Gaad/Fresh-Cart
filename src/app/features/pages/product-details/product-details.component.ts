@@ -8,16 +8,19 @@ import { ToastrService } from 'ngx-toastr';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { OwlOptions } from 'ngx-owl-carousel-o';
 import { WishListService } from '../../../core/services/e-comme/wishList/wish-list.service';
-import { CurrencyPipe, LowerCasePipe, TitleCasePipe } from '@angular/common';
+import { LowerCasePipe, TitleCasePipe, UpperCasePipe } from '@angular/common';
 import { AuthService } from '../../../core/services/auth/auth.service';
+import { TranslatePipe } from '@ngx-translate/core';
+import { CategoryComponent } from '../category/category.component';
+import { ProductCardComponent } from '../../../shared/components/product-card/product-card.component';
 @Component({
   selector: 'app-product-details',
-  imports: [CarouselModule,TitleCasePipe,LowerCasePipe,CurrencyPipe],
+  imports: [CarouselModule,TitleCasePipe,LowerCasePipe,UpperCasePipe,TranslatePipe,ProductCardComponent],
   templateUrl: './product-details.component.html',
   styleUrl: './product-details.component.scss'
 })
 export class ProductDetailsComponent implements OnInit,OnDestroy{
-  // Inject ActivatedRoute , ProductsService , CartService , AuthService , wishListService , router  and ToastrService. 
+  // Inject ActivatedRoute , ProductsService , CartService , AuthService , wishListService , router , ToastrService and CartCountService. 
   activatedRoute:ActivatedRoute = inject(ActivatedRoute);
   productsService:ProductsService = inject(ProductsService);
   cartService:CartService=inject(CartService);
@@ -33,6 +36,7 @@ export class ProductDetailsComponent implements OnInit,OnDestroy{
     touchDrag: true,
     pullDrag: true,
     dots: true,
+    rtl:true,
     navSpeed: 700,
     navText: ['', ''],
     responsive: {
@@ -56,15 +60,20 @@ export class ProductDetailsComponent implements OnInit,OnDestroy{
   updateWishProductLoading:boolean = false;
   heartwishFlag:boolean = false;
   pId!:string;
+  cId!:string;
   product!:Iproduct;
+  categoryName!:string;
+  similarProducts!:Iproduct[];
   wishList!:Iproduct[];
   subscription:Subscription=new Subscription();    
 
   // get product id from activatedRoute for calling a specific product API.
-  getProductId(){
+  getProductInfo(){
     const paramMapSub = this.activatedRoute.paramMap.subscribe({
       next:(res)=>{
-        this.pId = res.get('id')!;
+        this.pId = res.get('pId')!;
+        this.cId = res.get('cId')!;
+        this.categoryName = res.get('categoryName')!;
       }
     });
     this.subscription.add(paramMapSub);
@@ -78,6 +87,22 @@ export class ProductDetailsComponent implements OnInit,OnDestroy{
       }
     });
     this.subscription.add(getProductDetailsSub);
+  }
+
+  // function to compare the matched product of a category with th cId.
+  productBasedCategory(products:Iproduct[]):Iproduct[]{
+    return products.filter(product=>product.category._id===this.cId&&product._id!=this.pId);
+  } 
+
+  // see similar products based on category.
+  seeMore(){
+    const similarProductsSub = this.productsService.getAllProducts().subscribe({
+      next:res=>{
+        this.similarProducts=this.productBasedCategory(res.data);
+        console.log(this.similarProducts);
+      }
+    });
+    this.subscription.add(similarProductsSub)
   }
 
   // get wishList
@@ -166,6 +191,7 @@ export class ProductDetailsComponent implements OnInit,OnDestroy{
             if(this.heartwishFlag){
               this.removeFromWishList(pId);
             }
+            this.cartService.userCartCount.next(res.numOfCartItems);
           }
         },
         error:()=>{
@@ -182,7 +208,7 @@ export class ProductDetailsComponent implements OnInit,OnDestroy{
   }
 
   ngOnInit(): void {
-    this.getProductId();
+    this.getProductInfo();
     this.getProduct();
     this.getWishList();
   };

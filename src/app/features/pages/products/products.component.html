@@ -1,7 +1,7 @@
 <!-- product component -->
-<h1 class="my-12 text-5xl text-center font-bold"><span class="text-green-700">FreshCart</span> Products</h1>
+<h1 class="my-12 text-5xl text-center font-bold dark:text-white">{{'Fresh cart products'|translate}}</h1>
 <div class="my-11 w-3/4 md:w-1/2 mx-auto">
-    <input type="text" class="input" placeholder="search..." [(ngModel)]="search">
+    <input type="text" class="input" [placeholder]="'search product'|translate" [(ngModel)]="search">
  </div>
 <section class="w-[90%] mx-auto gap-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 items-stretch">
     @if (products&&wishList) {

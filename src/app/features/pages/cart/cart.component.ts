@@ -5,11 +5,11 @@ import { CartProductComponent } from "../../../shared/components/cart-product/ca
 import { Subscription } from 'rxjs';
 import { ICartProduct } from '../../../shared/interfaces/cartProduct/cart-product';
 import { Router } from '@angular/router';
-import { CurrencyPipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-cart',
-  imports: [CartProductComponent,CurrencyPipe],
+  imports: [CartProductComponent,TranslatePipe],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.scss'
 })
@@ -51,6 +51,7 @@ export class CartComponent implements OnInit,OnDestroy{
             this.totalCartPrice = 0
             this.clearLoading = false;
             this.toastrService.success('All cart is clear','Cart Operations');
+            this.cartService.userCartCount.next(0);
           }
         },
         error:()=>{   
