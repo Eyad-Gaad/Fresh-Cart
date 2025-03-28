@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ProductsService } from '../../../core/services/e-comme/products/products.service';
@@ -11,11 +11,9 @@ import { WishListService } from '../../../core/services/e-comme/wishList/wish-li
 import { LowerCasePipe, TitleCasePipe, UpperCasePipe } from '@angular/common';
 import { AuthService } from '../../../core/services/auth/auth.service';
 import { TranslatePipe } from '@ngx-translate/core';
-import { CategoryComponent } from '../category/category.component';
-import { ProductCardComponent } from '../../../shared/components/product-card/product-card.component';
 @Component({
   selector: 'app-product-details',
-  imports: [CarouselModule,TitleCasePipe,LowerCasePipe,UpperCasePipe,TranslatePipe,ProductCardComponent],
+  imports: [CarouselModule,TitleCasePipe,LowerCasePipe,UpperCasePipe,TranslatePipe],
   templateUrl: './product-details.component.html',
   styleUrl: './product-details.component.scss'
 })
@@ -60,10 +58,7 @@ export class ProductDetailsComponent implements OnInit,OnDestroy{
   updateWishProductLoading:boolean = false;
   heartwishFlag:boolean = false;
   pId!:string;
-  cId!:string;
   product!:Iproduct;
-  categoryName!:string;
-  similarProducts!:Iproduct[];
   wishList!:Iproduct[];
   subscription:Subscription=new Subscription();    
 
@@ -72,8 +67,6 @@ export class ProductDetailsComponent implements OnInit,OnDestroy{
     const paramMapSub = this.activatedRoute.paramMap.subscribe({
       next:(res)=>{
         this.pId = res.get('pId')!;
-        this.cId = res.get('cId')!;
-        this.categoryName = res.get('categoryName')!;
       }
     });
     this.subscription.add(paramMapSub);
@@ -87,22 +80,6 @@ export class ProductDetailsComponent implements OnInit,OnDestroy{
       }
     });
     this.subscription.add(getProductDetailsSub);
-  }
-
-  // function to compare the matched product of a category with th cId.
-  productBasedCategory(products:Iproduct[]):Iproduct[]{
-    return products.filter(product=>product.category._id===this.cId&&product._id!=this.pId);
-  } 
-
-  // see similar products based on category.
-  seeMore(){
-    const similarProductsSub = this.productsService.getAllProducts().subscribe({
-      next:res=>{
-        this.similarProducts=this.productBasedCategory(res.data);
-        console.log(this.similarProducts);
-      }
-    });
-    this.subscription.add(similarProductsSub)
   }
 
   // get wishList
@@ -125,6 +102,9 @@ export class ProductDetailsComponent implements OnInit,OnDestroy{
     this.wishList.forEach(element => {
       if(element._id===this.pId){
         this.heartwishFlag = true;
+      }
+      else{
+        this.heartwishFlag=false;
       }
     });
  }

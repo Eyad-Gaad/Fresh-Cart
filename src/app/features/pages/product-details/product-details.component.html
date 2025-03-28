@@ -42,27 +42,3 @@
           }
   </div>
 </section>
-<h2 #seemore (click)="seeMore()" class="mt-10 text-center text-2xl font-semibold cursor-pointer text-green-500 dark:text-blue-500">{{'See more like this'|translate}}</h2>
-@defer (on interaction(seemore)) {
-  <h1 class="my-12 text-5xl text-center font-bold dark:text-white">{{categoryName|uppercase}}</h1>
-  @if (similarProducts.length!=0) {
-    <!-- <div class="my-11 w-3/4 md:w-1/2 mx-auto">
-        <input type="text" class="input" [placeholder]="'search product'|translate" [(ngModel)]="search">
-     </div> -->
-    <section class="w-[90%] mx-auto gap-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 items-stretch">
-        @if (similarProducts&&wishList) {
-            @for (product of similarProducts; track product._id) {
-              <app-product-card [product]="product" [wishList]="wishList"></app-product-card>
-            }
-        }
-        @else{
-          @for (product of similarProducts; track product._id) {
-            <app-product-card [product]="product"></app-product-card>
-          }
-        }
-    </section>
-}
-@else{
-    <h2 class="mt-28 text-center text-5xl font-semibold dark:text-white">{{'products are not available'|translate}}</h2>
-}
-}

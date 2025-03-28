@@ -1,7 +1,7 @@
 <!-- reusable product card component -->
 <div class="flex flex-col justify-between cursor-pointer border border-green-400/50 dark:border-white rounded-md overflow-hidden shadow relative hover:scale-[1.06] transition-transform duration-[0.3s]">
     <div>
-      <div [routerLink]="['/product-Details',product.category.name,product.category._id,product._id]">
+      <div [routerLink]="['/product-Details',product._id]">
         <div class="card-img">
           <img [src]="imgCover" class="w-full object-fill" [alt]="product.title" />
         </div>

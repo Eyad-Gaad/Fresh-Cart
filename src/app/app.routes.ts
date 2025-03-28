@@ -19,7 +19,7 @@ export const routes: Routes = [
     {path:'cart',component:CartComponent,title:'cart',canActivate:[authGuard]},
     {path:'wishList',component:WishListComponent,title:'wishList',canActivate:[authGuard]},
     {path:'products',component:ProductsComponent,title:'products'},
-    {path:'product-Details/:categoryName/:cId/:pId',component:ProductDetailsComponent,title:'product-Details'},
+    {path:'product-Details/:pId',component:ProductDetailsComponent,title:'product-Details'},
     {path:'categories',component:CategoriesComponent,title:'categories'},
     {path:'category/:categoryName/:cId',loadComponent:()=>import('./features/pages/category/category.component').then(component=>component.CategoryComponent),title:'category'},
     {path:'brands',component:BrandsComponent,title:'brands'},
